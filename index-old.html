@@ -1,4 +1,3 @@
-@ -0,0 +1,1118 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -343,66 +342,6 @@
         }
 
         /* Resources Section */
-        .resource-tabs {
-            display: flex;
-            justify-content: center;
-            gap: 0;
-            margin-bottom: 3rem;
-            border-bottom: 1px solid rgba(120, 160, 200, 0.15);
-        }
-
-        .tab-button {
-            background: transparent;
-            border: none;
-            color: #b8bcc0;
-            padding: 1rem 2rem;
-            cursor: pointer;
-            font-size: 0.9rem;
-            font-weight: 400;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            transition: all 0.3s ease;
-            border-bottom: 2px solid transparent;
-            font-family: 'Georgia', 'Times New Roman', serif;
-        }
-
-        .tab-button:hover {
-            color: #78a0c8;
-        }
-
-        .tab-button.active {
-            color: #78a0c8;
-            border-bottom-color: #78a0c8;
-        }
-
-        .resource-group {
-            display: none;
-            animation: fadeInGroup 0.5s ease-in-out;
-        }
-
-        .resource-group.active {
-            display: block;
-        }
-
-        @keyframes fadeInGroup {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .essential-resources {
-            background: rgba(120, 160, 200, 0.05);
-            border: 2px solid rgba(120, 160, 200, 0.2);
-            padding: 2rem;
-            margin-bottom: 3rem;
-            position: relative;
-        }
-
-        .essential-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2rem;
-        }
-
         .resources-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
@@ -476,6 +415,7 @@
             background: #78a0c8;
             color: #0f1419;
         }
+
         /* Footer */
         footer {
             background: rgba(15, 20, 25, 0.95);
@@ -851,195 +791,105 @@
 
     <!-- Resources Section -->
     <section id="resources">
+	
         <div class="section-header fade-in">
-            <h2>Pilot Resources</h2>
+            <h2>Navigation Resources</h2>
             <p>Essential tools and databases recommended by professional pilots for fleet management, route planning, and galactic operations.</p>
         </div>
         
-		<!-- TAB CONTROLS -->
-        <div class="resource-tabs fade-in">
-			<button class="tab-button active" onclick="showResourceGroup('all')">All Resources</button>
-			<!-- On load, the 'all' tab only shows 6 of the resources available. need to find why it's only caching those-->
-			<button class="tab-button" onclick="showResourceGroup('emergency')">Emergency Assistance</button>
-            <button class="tab-button" onclick="showResourceGroup('essential')">Essential Resources</button>
-            <button class="tab-button" onclick="showResourceGroup('specialized')">Specialized Tools</button>
-			<button class="tab-button" onclick="showResourceGroup('EDMC Plugins')">EDMC Plugins</button>
-        </div>
-        <div id="emergency" class="resource-group">
-            <div class="resources-grid">
-                <div class="resource-card">
-                    <h3>Hull Seals</h3>
-                    <div class="resource-category">Emergency Assistance</div>
-                    <p>Professional emergency repair services providing critical hull integrity restoration for stranded vessels across the galaxy.</p>
-                    <a href="https://hullseals.space" target="_blank" class="resource-link">Visit HullSeals.space</a>
-                </div>
-				
+		<div class="resources-grid fade-in">
+             <div class="resource-card">
+                <h3>Hull Seals</h3>
+                <div class="resource-category">Emergency Assistance</div>
+                <p>Professional emergency repair services providing critical hull integrity restoration for stranded vessels across the galaxy.</p>
+                <a href="https://hullseals.space" target="_blank" class="resource-link">Visit HullSeals.space</a>
+            </div>
+			
              <div class="resource-card">
                 <h3>Fuel Rats</h3>
                 <div class="resource-category">Emergency Assistance</div>
                 <p>Professional emergency fuel delivery for stranded vessels across the galaxy.</p>
                 <a href="https://fuelrats.com/" target="_blank" class="resource-link">Visit FuelRats.com</a>
             </div>
-
+ 
+			<div class="resource-card">
+                <h3>Spansh</h3>
+                <div class="resource-category">Route Planning & Navigation</div>
+                <p>Advanced neutron route plotting, fleet carrier management, and galactic navigation tools for efficient long-distance travel.</p>
+                <a href="https://spansh.co.uk" target="_blank" class="resource-link">Visit Spansh.co.uk</a>
             </div>
-        </div>
-		
-        <div id="essential" class="resource-group active">
-            <div class="essential-resources">
-                <div class="essential-grid">
-                    
-                    <div class="resource-card">
-                        <h3>Spansh</h3>
-                        <div class="resource-category">Route Planning & Navigation</div>
-                        <p>Advanced neutron route plotting, fleet carrier management, and galactic navigation tools for efficient long-distance travel.</p>
-                        <a href="https://spansh.co.uk" target="_blank" class="resource-link">Visit Spansh.co.uk</a>
-                    </div>
 
-                    <div class="resource-card">
-                        <h3>Inara</h3>
-                        <div class="resource-category">Pilot Database & Market Intelligence</div>
-                        <p>Comprehensive pilot profiles, squadron management, market data, and galactic trade information for informed commercial decisions.</p>
-                        <a href="https://inara.cz/elite" target="_blank" class="resource-link">Visit Inara.cz/elite</a>
-                    </div>
-
-                    <div class="resource-card">
-                        <h3>Coriolis Shipyard</h3>
-                        <div class="resource-category">Ship Outfitting & Configuration</div>
-                        <p>Professional ship building and configuration tool for optimizing vessel performance and operational specifications.</p>
-                        <a href="https://coriolis.io" target="_blank" class="resource-link">Visit Coriolis.io</a>
-                    </div>
-
-                    <div class="resource-card">
-                        <h3>EDSY</h3>
-                        <div class="resource-category">Advanced Ship Engineering</div>
-                        <p>Detailed engineering calculator and outfitting planner for precise ship configuration and performance optimization.</p>
-                        <a href="https://edsy.org" target="_blank" class="resource-link">Visit EDSY.org</a>
-                    </div>
-
-                    <div class="resource-card">
-                        <h3>ED Astro</h3>
-                        <div class="resource-category">Exploration & Discovery</div>
-                        <p>Galactic cartography and exploration database featuring detailed stellar cartography and discovery records.</p>
-                        <a href="https://edastro.com" target="_blank" class="resource-link">Visit EDastro.com</a>
-                    </div>
-
-                    <div class="resource-card">
-                        <h3>CMDR's Toolbox</h3>
-                        <div class="resource-category">Multi-Purpose Utilities</div>
-                        <p>Comprehensive suite of pilot utilities including trading tools, exploration aids, and mission planning resources for professional operations.</p>
-                        <a href="https://cmdrs-toolbox.com" target="_blank" class="resource-link">Visit CMDR's-Toolbox.com</a>
-                    </div>
-                </div>
+            <div class="resource-card">
+                <h3>Inara</h3>
+                <div class="resource-category">Pilot Database & Market Intelligence</div>
+                <p>Comprehensive pilot profiles, squadron management, market data, and galactic trade information for informed commercial decisions.</p>
+                <a href="https://inara.cz/elite" target="_blank" class="resource-link">Visit Inara.cz/elite</a>
             </div>
-        </div>
 
-        <div id="specialized" class="resource-group">
-            <div class="resources-grid">
-                <div class="resource-card">
-                    <h3>ED Market Connector</h3>
-                    <div class="resource-category">Data Integration & Market Updates</div>
-                    <p>Essential ship system integration software for real-time market data transmission and automatic galactic database updates.</p>
-                    <a href="https://github.com/EDCD/EDMarketConnector/releases" target="_blank" class="resource-link">Download EDMC</a>
-                </div>
-
-				<div class="resource-card">
-					<h3>Elite Dangerous Discovery / EDD Lite</h3>
-					<div class="resource-category">Multi-Purpose Utilities</div>
-					<p>Comprehensive suite of pilot utilities and data displays for Elite Dangerous.</p>
-					<a href="https://github.com/EDDiscovery/EDDiscovery/releases" target="_blank" class="resource-link">Download EDD/EDDLite</a>
-				</div>
-
+            <div class="resource-card">
+                <h3>Coriolis Shipyard</h3>
+                <div class="resource-category">Ship Outfitting & Configuration</div>
+                <p>Professional ship building and configuration tool for optimizing vessel performance and operational specifications.</p>
+                <a href="https://coriolis.io" target="_blank" class="resource-link">Visit Coriolis.io</a>
             </div>
-        </div>
 
-		<div id="EDMC Plugins" class="resource-group">
-            <div class="resources-grid">
-                <div class="resource-card">
-					<h3>FCMS Plugin</h3>
-					<div class="resource-category">EDMC Plugins</div>
-					<p>The EDMC plugin to allow the FCMS website to function for your carrier.</p>
-					<a href="https://github.com/anthonylangsworth/FCMS/releases" target="_blank" class="resource-link">Download FCMS</a>
-				</div>
-				
-				<div class="resource-card">
-					<h3>Elite Dangerous: Recon</h3>
-					<div class="resource-category">EDMC Plugins</div>
-					<p>EDR is available as a plugin for Elite Dangerous Market Connector (EDMC). EDMC is a third party companion app for Elite: Dangerous whose main purpose is to collect market information for traders. It also provides integrations with well-known Elite: Dangerous third party websites, e.g. Inara, Elite Dangerous Star Map, Coriolis, etc.</p>
-					<a href="https://edrecon.com/edmc-plugin" target="_blank" class="resource-link">Download EDR</a>
-				</div>
-			</div>
-		</div>
-        <div id="all" class="resource-group">
-            <div class="resources-grid">
-                <div class="resource-card">
-                    <h3>Hull Seals</h3>
-                    <div class="resource-category">Emergency Assistance</div>
-                    <p>Professional emergency repair services providing critical hull integrity restoration for stranded vessels across the galaxy.</p>
-                    <a href="https://hullseals.space" target="_blank" class="resource-link">Visit HullSeals.space</a>
-                </div>
-
-				<div class="resource-card">
-					<h3>Fuel Rats</h3>
-					<div class="resource-category">Emergency Assistance</div>
-					<p>Professional emergency fuel delivery for stranded vessels across the galaxy.</p>
-					<a href="https://fuelrats.com/" target="_blank" class="resource-link">Visit FuelRats.com</a>
-				</div>
-	
-                <div class="resource-card">
-                    <h3>Spansh</h3>
-                    <div class="resource-category">Route Planning & Navigation</div>
-                    <p>Advanced neutron route plotting, fleet carrier management, and galactic navigation tools for efficient long-distance travel.</p>
-                    <a href="https://spansh.co.uk" target="_blank" class="resource-link">Visit Spansh.co.uk</a>
-                </div>
-
-                <div class="resource-card">
-                    <h3>Inara</h3>
-                    <div class="resource-category">Pilot Database & Market Intelligence</div>
-                    <p>Comprehensive pilot profiles, squadron management, market data, and galactic trade information for informed commercial decisions.</p>
-                    <a href="https://inara.cz/elite" target="_blank" class="resource-link">Visit Inara.cz/elite</a>
-                </div>
-
-                <div class="resource-card">
-                    <h3>Coriolis Shipyard</h3>
-                    <div class="resource-category">Ship Outfitting & Configuration</div>
-                    <p>Professional ship building and configuration tool for optimizing vessel performance and operational specifications.</p>
-                    <a href="https://coriolis.io" target="_blank" class="resource-link">Visit Coriolis.io</a>
-                </div>
-
-                <div class="resource-card">
-                    <h3>EDSY</h3>
-                    <div class="resource-category">Advanced Ship Engineering</div>
-                    <p>Detailed engineering calculator and outfitting planner for precise ship configuration and performance optimization.</p>
-                    <a href="https://edsy.org" target="_blank" class="resource-link">Visit EDSY.org</a>
-                </div>
-
-                <div class="resource-card">
-                    <h3>ED Astro</h3>
-                    <div class="resource-category">Exploration & Discovery</div>
-                    <p>Galactic cartography and exploration database featuring detailed stellar cartography and discovery records.</p>
-                    <a href="https://edastro.com" target="_blank" class="resource-link">Visit EDastro.com</a>
-                </div>
-
-                <div class="resource-card">
-                    <h3>CMDR's Toolbox</h3>
-                    <div class="resource-category">Multi-Purpose Utilities</div>
-                    <p>Comprehensive suite of pilot utilities including trading tools, exploration aids, and mission planning resources for professional operations.</p>
-                    <a href="https://cmdrs-toolbox.com" target="_blank" class="resource-link">Visit CMDR's-Toolbox.com</a>
-                </div>
-
-                <div class="resource-card">
-                    <h3>ED Market Connector</h3>
-                    <div class="resource-category">Data Integration & Market Updates</div>
-                    <p>Essential ship system integration software for real-time market data transmission and automatic galactic database updates.</p>
-                    <a href="https://github.com/EDCD/EDMarketConnector/releases" target="_blank" class="resource-link">Download EDMC</a>
-                </div>
-				<div class="resource-card">
-					<h3>Elite Dangerous Discovery / EDD Lite</h3>
-					<div class="resource-category">Multi-Purpose Utilities</div>
-					<p>Comprehensive suite of pilot utilities and data displays for Elite Dangerous.</p>
-					<a href="https://github.com/EDDiscovery/EDDiscovery/releases" target="_blank" class="resource-link">Download EDD/EDDLite</a>
-				</div>
+            <div class="resource-card">
+                <h3>EDSY</h3>
+                <div class="resource-category">Advanced Ship Engineering</div>
+                <p>Detailed engineering calculator and outfitting planner for precise ship configuration and performance optimization.</p>
+                <a href="https://edsy.org" target="_blank" class="resource-link">Visit EDSY.org</a>
             </div>
+
+            <div class="resource-card">
+                <h3>ED Astro</h3>
+                <div class="resource-category">Exploration & Discovery</div>
+                <p>Galactic cartography and exploration database featuring detailed stellar cartography and discovery records.</p>
+                <a href="https://edastro.com" target="_blank" class="resource-link">Visit EDastro.com</a>
+            </div>
+
+            <div class="resource-card">
+                <h3>CMDR's Toolbox</h3>
+                <div class="resource-category">Multi-Purpose Utilities</div>
+                <p>Comprehensive suite of pilot utilities including trading tools, exploration aids, and mission planning resources for professional operations.</p>
+                <a href="https://cmdrs-toolbox.com" target="_blank" class="resource-link">Visit CMDR's-Toolbox.com</a>
+            </div>
+			
+            <div class="resource-card">
+                <h3>Elite Dangerous Discovery / EDD Lite</h3>
+                <div class="resource-category">Multi-Purpose Utilities</div>
+                <p>Comprehensive suite of pilot utilities and data displays for Elite Dangerous.</p>
+                <a href="https://github.com/EDDiscovery/EDDiscovery/releases" target="_blank" class="resource-link">Download EDD/EDDLite</a>
+            </div>			
+			
+			<div class="resource-card">
+                <h3>Fleet Carrier Management System</h3>
+                <div class="resource-category">Fleet Carrier Management</div>
+                <p>Easy to use fleet manangement page with discord intergration to announce carrier market updates and departure announcements.</p>
+				<p><i>This site requires use of EDMC and the FCMS plugin</i></p>
+                <a href="http://fleetcarrier.space/" target="_blank" class="resource-link">Visit FCMS</a>
+            </div>
+			
+			<div class="resource-card">
+                <h3>ED Market Connector</h3>
+                <div class="resource-category">Data Integration & Market Updates</div>
+                <p>Essential ship system integration software for real-time market data transmission and automatic galactic database updates.</p>
+                <a href="https://github.com/EDCD/EDMarketConnector/releases" target="_blank" class="resource-link">Download EDMC</a>
+            </div>
+			
+			<div class="resource-card">
+                <h3>FCMS Plugin</h3>
+                <div class="resource-category">EDMC Plugins</div>
+                <p>The EDMC plugin to allow the FCMS website to function for your carrier.</p>
+                <a href="https://github.com/anthonylangsworth/FCMS/releases" target="_blank" class="resource-link">Download FCMS</a>
+            </div>
+			
+			<div class="resource-card">
+                <h3>Elite Dangerous: Recon</h3>
+                <div class="resource-category">EDMC Plugins</div>
+                <p>EDR is available as a plugin for Elite Dangerous Market Connector (EDMC). EDMC is a third party companion app for Elite: Dangerous whose main purpose is to collect market information for traders. It also provides integrations with well-known Elite: Dangerous third party websites, e.g. Inara, Elite Dangerous Star Map, Coriolis, etc.</p>
+                <a href="https://edrecon.com/edmc-plugin" target="_blank" class="resource-link">Download EDR</a>
+            </div>			
+			
         </div>
     </section>
 
@@ -1126,28 +976,6 @@
 
         // Initialize
         createStars();
-
-        // Tab switching functionality
-        function showResourceGroup(groupId) {
-            // Hide all resource groups
-            document.querySelectorAll('.resource-group').forEach(group => {
-                group.classList.remove('active');
-            });
-            
-            // Remove active state from all tab buttons
-            document.querySelectorAll('.tab-button').forEach(button => {
-                button.classList.remove('active');
-            });
-            
-            // Show selected group
-            document.getElementById(groupId).classList.add('active');
-            
-            // Add active state to clicked button
-            event.target.classList.add('active');
-        }
-
-        // Make function globally available
-        window.showResourceGroup = showResourceGroup;
     </script>
 </body>
 </html>
