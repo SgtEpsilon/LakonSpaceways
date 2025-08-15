@@ -561,6 +561,106 @@
             opacity: 1;
             transform: translateY(0);
         }
+		
+		<!-- Warranty Services Button-->
+        .warranty-link {
+            color: #e8eaed;
+            text-decoration: underline;
+            cursor: pointer;
+            font-size: 16px;
+            transition: color 0.3s;
+        }
+
+        .warranty-link:hover {
+            color: #ff8c42;
+            text-decoration: none;
+        }
+
+        /* Popup overlay */
+        .popup-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+        }
+
+        /* Popup container */
+        .popup-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #1a1a1a;
+            border: 2px solid #333;
+            border-radius: 10px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            z-index: 1001;
+        }
+
+        .popup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 15px;
+        }
+
+        .popup-title {
+            color: #ff6b35;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: #888;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .close-btn:hover {
+            background-color: #333;
+            color: #fff;
+        }
+
+        .popup-content {
+            color: #cccccc;
+            line-height: 1.6;
+            font-size: 16px;
+        }
+
+        .popup-content h3 {
+            color: #ff6b35;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+
+        .popup-content p {
+            margin-bottom: 15px;
+        }
+
+        .company-name {
+            color: #e8eaed
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -610,6 +710,7 @@
                     <div class="spec-list">
                         <div class="spec-item">Hardpoints: 6</div>
                         <div class="spec-item">FSD: Class 5</div>
+						<div class="spec-item">Jump: 42.05 ly</div>
                         <div class="spec-item">Mass: 450t</div>
                         <div class="spec-item">Crew: 2</div>
                     </div>
@@ -625,6 +726,7 @@
                     <div class="spec-list">
                         <div class="spec-item">Hardpoints: 8</div>
                         <div class="spec-item">FSD: Class 5</div>
+						<div class="spec-item">Jump: 46.92 ly</div>
                         <div class="spec-item">Mass: 400t</div>
                         <div class="spec-item">Crew: 2</div>
                     </div>
@@ -640,6 +742,7 @@
                     <div class="spec-list">
                         <div class="spec-item">Hardpoints: 6</div>
                         <div class="spec-item">FSD: Class 6</div>
+						<div class="spec-item">Jump: 40.26 ly</div>
                         <div class="spec-item">Mass: 500t</div>
                         <div class="spec-item">Crew: 2</div>
                     </div>
@@ -653,7 +756,7 @@
                 <div class="specifications">
                     <div class="spec-title">Specifications</div>
                     <div class="spec-list">
-                        <div class="spec-item">Jump: 68.13 ly</div>
+                        <div class="spec-item">Jump: 134.33 ly</div>
                         <div class="spec-item">FSD: Class 5</div>
                         <div class="spec-item">Mass: 280t</div>
                         <div class="spec-item">Crew: 2</div>
@@ -668,7 +771,7 @@
                 <div class="specifications">
                     <div class="spec-title">Specifications</div>
                     <div class="spec-list">
-                        <div class="spec-item">Jump: 55.28 ly</div>
+                        <div class="spec-item">Jump: 96.31 ly</div>
                         <div class="spec-item">FSD: Class 5</div>
                         <div class="spec-item">Mass: 234t</div>
                         <div class="spec-item">Crew: 2</div>
@@ -683,7 +786,7 @@
                 <div class="specifications">
                     <div class="spec-title">Specifications</div>
                     <div class="spec-list">
-                        <div class="spec-item">Jump: 65.21 ly</div>
+                        <div class="spec-item">Jump: 161.13 ly</div>
                         <div class="spec-item">FSD: Class 5</div>
                         <div class="spec-item">Mass: 260t</div>
                         <div class="spec-item">Crew: 1</div>
@@ -698,7 +801,7 @@
                 <div class="specifications">
                     <div class="spec-title">Specifications</div>
                     <div class="spec-list">
-                        <div class="spec-item">Jump: 50.47 ly</div>
+                        <div class="spec-item">Jump: 94.19 ly</div>
                         <div class="spec-item">FSD: Class 4</div>
                         <div class="spec-item">Mass: 170t</div>
                         <div class="spec-item">Crew: 1</div>
@@ -728,7 +831,7 @@
                 <div class="specifications">
                     <div class="spec-title">Specifications</div>
                     <div class="spec-list">
-                        <div class="spec-item">Cargo: 114 tonnes</div>
+                        <div class="spec-item">Cargo capacity: 106 tonnes</div>
                         <div class="spec-item">FSD: Class 5</div>
                         <div class="spec-item">Mass: 155t</div>
                         <div class="spec-item">Crew: 1</div>
@@ -743,7 +846,7 @@
                 <div class="specifications">
                     <div class="spec-title">Specifications</div>
                     <div class="spec-list">
-                        <div class="spec-item">Cargo: 320 tonnes</div>
+                        <div class="spec-item">Cargo capacity: 302 tonnes</div>
                         <div class="spec-item">FSD: Class 6</div>
                         <div class="spec-item">Mass: 420t</div>
                         <div class="spec-item">Crew: 1</div>
@@ -758,7 +861,7 @@
                 <div class="specifications">
                     <div class="spec-title">Specifications</div>
                     <div class="spec-list">
-                        <div class="spec-item">Cargo: 534 tonnes</div>
+                        <div class="spec-item">Cargo capacity: 390 tonnes</div>
                         <div class="spec-item">FSD: Class 7</div>
                         <div class="spec-item">Mass: 650t</div>
                         <div class="spec-item">Crew: 2</div>
@@ -773,8 +876,8 @@
                 <div class="specifications">
                     <div class="spec-title">Specifications</div>
                     <div class="spec-list">
-                        <div class="spec-item">Cargo: 790 tonnes</div>
-                        <div class="spec-item">FSD: Class 8</div>
+                        <div class="spec-item">Cargo capacity: 758 tonnes</div>
+                        <div class="spec-item">FSD: Class 6</div>
                         <div class="spec-item">Mass: 1,000t</div>
                         <div class="spec-item">Crew: 3</div>
                     </div>
@@ -789,6 +892,7 @@
                     <div class="spec-title">Specifications</div>
                     <div class="spec-list">
                         <div class="spec-item">Hardpoints: 9</div>
+						<div class="spec-item">Cargo capacity: 470 tonnes</div>
                         <div class="spec-item">FSD: Class 6</div>
                         <div class="spec-item">Mass: 1,200t</div>
                         <div class="spec-item">Crew: 3</div>
@@ -874,17 +978,24 @@
                     <a href="https://hullseals.space" target="_blank" class="resource-link">Visit HullSeals.space</a>
                 </div>
 				
-             <div class="resource-card">
-                <h3>Fuel Rats</h3>
-                <div class="resource-category">Emergency Assistance</div>
-                <p>Professional emergency fuel delivery for stranded vessels across the galaxy.</p>
-                <a href="https://fuelrats.com/" target="_blank" class="resource-link">Visit FuelRats.com</a>
-            </div>
+				<div class="resource-card">
+					<h3>Fuel Rats</h3>
+					<div class="resource-category">Emergency Assistance</div>
+					<p>Professional emergency fuel delivery for stranded vessels across the galaxy.</p>
+					<a href="https://fuelrats.com/" target="_blank" class="resource-link">Visit FuelRats.com</a>
+				</div>
+
+				<div class="resource-card">
+					<h3>Tritium Monkeys</h3>
+					<div class="resource-category">Emergency Assistance</div>
+					<p>Professional emergency fuel delivery for stranded Fleet Carriers across the galaxy.</p>
+					<a href="https://www.tritiummonkeys.com/" target="_blank" class="resource-link">Visit TritiumMonkeys.com</a>
+				</div>
 
             </div>
         </div>
 		
-        <div id="essential" class="resource-group active">
+        <div id="essential" class="resource-group">
             <div class="essential-resources">
                 <div class="essential-grid">
                     
@@ -969,7 +1080,7 @@
 				</div>
 			</div>
 		</div>
-        <div id="all" class="resource-group">
+        <div id="all" class="resource-group active">
             <div class="resources-grid">
                 <div class="resource-card">
                     <h3>Hull Seals</h3>
@@ -984,6 +1095,13 @@
 					<p>Professional emergency fuel delivery for stranded vessels across the galaxy.</p>
 					<a href="https://fuelrats.com/" target="_blank" class="resource-link">Visit FuelRats.com</a>
 				</div>
+				
+				<div class="resource-card">
+					<h3>Tritium Monkeys</h3>
+					<div class="resource-category">Emergency Assistance</div>
+					<p>Professional emergency fuel delivery for stranded Fleet Carriers across the galaxy.</p>
+					<a href="https://www.tritiummonkeys.com/" target="_blank" class="resource-link">Visit TritiumMonkeys.com</a>
+				</div>				
 	
                 <div class="resource-card">
                     <h3>Spansh</h3>
@@ -1051,7 +1169,7 @@
                 <a href="#">Commercial Transport Solutions</a>
                 <a href="#">Deep Space Exploration</a>
                 <a href="#">Alliance Defense Contracts</a>
-                <a href="#">Custom Configuration Services</a>
+                <a href="https://coriolis.io">Custom Configuration Services</a>
                 <a href="https://inara.cz/elite/nearest-stations/?formbrief=1&ps1=Synuefe+PA-L+d9-30&pi13=&pi14=0&pi15=0&pi16=&pi1=0&pi18=0&pi19=0&pi17=0&pa1%5B%5D=32&ps2=&pi25=0&pi8=&pi9=0&pi26=0&pi3=&pi4=0&pi5=0&pi7=0&pi23=0&pi6=0&ps3=&pi24=0" target="_blank">Fleet Management Systems</a>
             </div>
             <div class="footer-section">
@@ -1060,8 +1178,36 @@
                 <a href="#">Certified Training Programs</a>
                 <a href="#">Authorized Service Centers</a>
                 <a href="#">Parts & Components</a>
-                <a href="#">Warranty Services</a>
+                <a href="#" class="warranty-link" onclick="openWarrantyPopup(); return false;">Warranty Services</a>
             </div>
+			<!-- Warranty Popup-->
+			    <div class="popup-overlay" id="warrantyPopup" onclick="closeWarrantyPopup(event)">
+        <div class="popup-container" onclick="event.stopPropagation()">
+            <div class="popup-header">
+                <h2 class="popup-title">Warranty Services</h2>
+                <button class="close-btn" onclick="closeWarrantyPopup()">&times;</button>
+            </div>
+            
+            <div class="popup-content">
+                <h3>No Warranties Provided</h3>
+                <p><span class="company-name">Lakon Spaceways</span> operates in the vast expanse of space where conditions are unpredictable and dangers are constant.</p>
+                
+                <p><strong>All services and products are provided "AS IS" without any warranties, express or implied.</strong></p>
+                
+                <p>This includes but is not limited to:</p>
+                <ul>
+                    <li>Ship hull integrity during transport</li>
+                    <li>Cargo protection from pirate interdiction</li>
+                    <li>Delivery timeframes affected by stellar phenomena</li>
+                    <li>Equipment functionality in hostile environments</li>
+                </ul>
+                
+                <p>By engaging our services, you acknowledge the inherent risks of space travel and trade. <span class="company-name">Lakon Spaceways</span> shall not be liable for any damages, losses, or inconveniences resulting from our services.</p>
+                
+                <p><em>Safe travels, Commander. o7</em></p>
+            </div>
+        </div>		
+    </div>
             <div class="footer-section">
                 <h3>Corporate Information</h3>
                 <p>Lakon Spaceways headquarters are located in the Alioth system, with manufacturing facilities throughout Alliance space and authorized distributors across all inhabited regions.</p>
@@ -1148,6 +1294,29 @@
 
         // Make function globally available
         window.showResourceGroup = showResourceGroup;
+		
+		// Warranty Popup
+        function openWarrantyPopup() {
+            document.getElementById('warrantyPopup').style.display = 'block';
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        }
+
+        function closeWarrantyPopup(event) {
+            // Close if clicking overlay or close button
+            if (event && event.target !== document.getElementById('warrantyPopup')) {
+                return;
+            }
+            
+            document.getElementById('warrantyPopup').style.display = 'none';
+            document.body.style.overflow = 'auto'; // Restore scrolling
+        }
+
+        // Close popup with Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeWarrantyPopup();
+            }
+        });
     </script>
 </body>
 </html>
