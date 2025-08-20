@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lakon Spaceways | Precision Spacecraft Engineering</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            background: #0f1419;
+            color: #e8eaed;
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* Subtle animated background */
+        .background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            background: radial-gradient(ellipse at 20% 50%, rgba(120, 160, 200, 0.03) 0%, transparent 50%),
+                        radial-gradient(ellipse at 80% 20%, rgba(120, 160, 200, 0.02) 0%, transparent 50%);
+        }
+
+        .stars {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .star {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            background: #ffffff;
+            border-radius: 50%;
+            opacity: 0.4;
+            animation: subtleTwinkle 8s infinite ease-in-out;
+        }
+
+        @keyframes subtleTwinkle {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 0.6; }
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(15, 20, 25, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(120, 160, 200, 0.2);
+            z-index: 1000;
+            padding: 1.2rem 0;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            font-size: 1.6rem;
+            font-weight: 400;
+            letter-spacing: 2px;
+            color: #78a0c8;
+            text-transform: uppercase;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 3rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: #e8eaed;
+            text-decoration: none;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+            transition: color 0.3s ease;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        .nav-links a:hover {
+            color: #78a0c8;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero-content {
+            max-width: 900px;
+            padding: 0 2rem;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.8rem, 6vw, 4.5rem);
+            font-weight: 300;
+            margin-bottom: 1.5rem;
+            color: #ffffff;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .hero-subtitle {
+            font-size: 1.1rem;
+            color: #78a0c8;
+            margin-bottom: 0.5rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-weight: 400;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 3rem;
+            color: #b8bcc0;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.8;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 1rem 3rem;
+            background: transparent;
+            color: #78a0c8;
+            text-decoration: none;
+            border: 2px solid #78a0c8;
+            font-weight: 400;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .cta-button:hover {
+            background: #78a0c8;
+            color: #0f1419;
+        }
+
+        /* Sections */
+        section {
+            padding: 8rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 5rem;
+        }
+
+        .section-header h2 {
+            font-size: clamp(2.2rem, 4vw, 3.2rem);
+            font-weight: 300;
+            margin-bottom: 1.5rem;
+            color: #ffffff;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .section-header p {
+            font-size: 1.1rem;
+            color: #b8bcc0;
+            max-width: 650px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        /* Fleet Grid */
+        .fleet-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 2.5rem;
+            margin-top: 4rem;
+        }
+
+        .ship-card {
+            background: rgba(120, 160, 200, 0.02);
+            border: 1px solid rgba(120, 160, 200, 0.15);
+            padding: 2.5rem;
+            transition: all 0.4s ease;
+            position: relative;
+        }
+
+        .ship-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #78a0c8;
+        }
+
+        .ship-card:hover {
+            background: rgba(120, 160, 200, 0.04);
+            border-color: rgba(120, 160, 200, 0.25);
+        }
+
+        .coming-soon {
+            position: relative;
+            opacity: 0.8;
+        }
+
+        .coming-soon-banner {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: #78a0c8;
+            color: #0f1419;
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            z-index: 10;
+        }
+
+        .ship-card h3 {
+            font-size: 1.4rem;
+            font-weight: 400;
+            margin-bottom: 1rem;
+            color: #78a0c8;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .ship-class {
+            font-size: 0.9rem;
+            color: #78a0c8;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            opacity: 0.8;
+        }
+
+        .ship-card p {
+            color: #b8bcc0;
+            margin-bottom: 2rem;
+            line-height: 1.7;
+        }
+
+        .specifications {
+            border-top: 1px solid rgba(120, 160, 200, 0.15);
+            padding-top: 1.5rem;
+        }
+
+        .spec-title {
+            font-size: 0.9rem;
+            color: #78a0c8;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .spec-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 0.8rem;
+        }
+
+        .spec-item {
+            color: #e8eaed;
+            font-size: 0.9rem;
+            padding: 0.4rem 0;
+            border-bottom: 1px solid rgba(120, 160, 200, 0.1);
+        }
+
+        /* Company Heritage */
+        .heritage {
+            background: rgba(120, 160, 200, 0.02);
+            border-top: 1px solid rgba(120, 160, 200, 0.15);
+            border-bottom: 1px solid rgba(120, 160, 200, 0.15);
+        }
+
+        .heritage-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .heritage-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #b8bcc0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+        }
+
+        .stat {
+            text-align: center;
+            padding: 1.5rem;
+            border: 1px solid rgba(120, 160, 200, 0.15);
+        }
+
+        .stat-number {
+            font-size: 2.2rem;
+            font-weight: 300;
+            color: #78a0c8;
+            display: block;
+            margin-bottom: 0.5rem;
+            letter-spacing: 1px;
+        }
+
+        .stat-label {
+            color: #e8eaed;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Resources Section */
+        .resource-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 0;
+            margin-bottom: 3rem;
+            border-bottom: 1px solid rgba(120, 160, 200, 0.15);
+        }
+
+        .tab-button {
+            background: transparent;
+            border: none;
+            color: #b8bcc0;
+            padding: 1rem 2rem;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            border-bottom: 2px solid transparent;
+            font-family: 'Georgia', 'Times New Roman', serif;
+        }
+
+        .tab-button:hover {
+            color: #78a0c8;
+        }
+
+        .tab-button.active {
+            color: #78a0c8;
+            border-bottom-color: #78a0c8;
+        }
+
+        .resource-group {
+            display: none;
+            animation: fadeInGroup 0.5s ease-in-out;
+        }
+
+        .resource-group.active {
+            display: block;
+        }
+
+        @keyframes fadeInGroup {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .essential-resources {
+            background: rgba(120, 160, 200, 0.05);
+            border: 2px solid rgba(120, 160, 200, 0.2);
+            padding: 2rem;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .essential-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2.5rem;
+            margin-top: 4rem;
+        }
+
+        .resource-card {
+            background: rgba(120, 160, 200, 0.02);
+            border: 1px solid rgba(120, 160, 200, 0.15);
+            padding: 2.5rem;
+            transition: all 0.4s ease;
+            position: relative;
+        }
+
+        .resource-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #78a0c8;
+        }
+
+        .resource-card:hover {
+            background: rgba(120, 160, 200, 0.04);
+            border-color: rgba(120, 160, 200, 0.25);
+            transform: translateY(-5px);
+        }
+
+        .resource-card h3 {
+            font-size: 1.4rem;
+            font-weight: 400;
+            margin-bottom: 1rem;
+            color: #78a0c8;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .resource-category {
+            font-size: 0.9rem;
+            color: #78a0c8;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            opacity: 0.8;
+        }
+
+        .resource-card p {
+            color: #b8bcc0;
+            margin-bottom: 2rem;
+            line-height: 1.7;
+        }
+
+        .resource-link {
+            display: inline-block;
+            padding: 0.8rem 2rem;
+            background: transparent;
+            color: #78a0c8;
+            text-decoration: none;
+            border: 1px solid #78a0c8;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .resource-link:hover {
+            background: #78a0c8;
+            color: #0f1419;
+        }
+        /* Footer */
+        footer {
+            background: rgba(15, 20, 25, 0.95);
+            padding: 4rem 2rem 2rem;
+            border-top: 1px solid rgba(120, 160, 200, 0.2);
+            margin-top: 6rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 3rem;
+        }
+
+        .footer-section h3 {
+            color: #78a0c8;
+            margin-bottom: 1.5rem;
+            font-weight: 400;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-size: 1rem;
+        }
+
+        .footer-section p,
+        .footer-section a {
+            color: #b8bcc0;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 0.8rem;
+            transition: color 0.3s ease;
+            line-height: 1.6;
+        }
+
+        .footer-section a:hover {
+            color: #78a0c8;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            border-top: 1px solid rgba(120, 160, 200, 0.15);
+            padding-top: 2rem;
+            margin-top: 3rem;
+            color: #78a0c8;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            section {
+                padding: 5rem 1.5rem;
+            }
+            
+            .fleet-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .heritage-content {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Fade in animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+		
+		<!-- Warranty Services Button-->
+        .warranty-link {
+            color: #e8eaed;
+            text-decoration: underline;
+            cursor: pointer;
+            font-size: 16px;
+            transition: color 0.3s;
+        }
+
+        .warranty-link:hover {
+            color: #ff8c42;
+            text-decoration: none;
+        }
+
+        /* Popup overlay */
+        .popup-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+        }
+
+        /* Popup container */
+        .popup-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #1a1a1a;
+            border: 2px solid #333;
+            border-radius: 10px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            z-index: 1001;
+        }
+
+        .popup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 15px;
+        }
+
+        .popup-title {
+            color: #ff6b35;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: #888;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .close-btn:hover {
+            background-color: #333;
+            color: #fff;
+        }
+
+        .popup-content {
+            color: #cccccc;
+            line-height: 1.6;
+            font-size: 16px;
+        }
+
+        .popup-content h3 {
+            color: #ff6b35;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+
+        .popup-content p {
+            margin-bottom: 15px;
+        }
+
+        .company-name {
+            color: #e8eaed
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <!-- Subtle background -->
+    <div class="background">
+        <div class="stars" id="stars"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">Lakon Spaceways</div>
+            <ul class="nav-links">
+                <li><a href="index.html#home">Home</a></li>
+                <li><a href="index.html#fleet">Fleet</a></li>
+                <li><a href="index.html#heritage">Heritage</a></li>
+                <li><a href="resources.html">Resources</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+	<!-- Resources Section -->
+    <section id="resources">
+        <div class="section-header fade-in">
+            <h2>Pilot Resources</h2>
+            <p>Essential tools and databases recommended by professional pilots for fleet management, route planning, and galactic operations.</p>
+        </div>
+        
+		<!-- TAB CONTROLS -->
+        <div class="resource-tabs fade-in">
+			<button class="tab-button active" onclick="showResourceGroup('all')">All Resources</button>
+			<!-- On load, the 'all' tab only shows 6 of the resources available. need to find why it's only caching those-->
+			<button class="tab-button" onclick="showResourceGroup('emergency')">Emergency Assistance</button>
+            <button class="tab-button" onclick="showResourceGroup('essential')">Essential Resources</button>
+            <button class="tab-button" onclick="showResourceGroup('specialized')">Specialized Tools</button>
+			<button class="tab-button" onclick="showResourceGroup('EDMC Plugins')">EDMC Plugins</button>
+        </div>
+        <div id="emergency" class="resource-group">
+            <div class="resources-grid">
+                <div class="resource-card">
+                    <h3>Hull Seals</h3>
+                    <div class="resource-category">Emergency Assistance</div>
+                    <p>Professional emergency repair services providing critical hull integrity restoration for stranded vessels across the galaxy.</p>
+                    <a href="https://hullseals.space" target="_blank" class="resource-link">Visit HullSeals.space</a>
+                </div>
+				
+				<div class="resource-card">
+					<h3>Fuel Rats</h3>
+					<div class="resource-category">Emergency Assistance</div>
+					<p>Professional emergency fuel delivery for stranded vessels across the galaxy.</p>
+					<a href="https://fuelrats.com/" target="_blank" class="resource-link">Visit FuelRats.com</a>
+				</div>
+
+				<div class="resource-card">
+					<h3>Tritium Monkeys</h3>
+					<div class="resource-category">Emergency Assistance</div>
+					<p>Professional emergency fuel delivery for stranded Fleet Carriers across the galaxy.</p>
+					<a href="https://www.tritiummonkeys.com/" target="_blank" class="resource-link">Visit TritiumMonkeys.com</a>
+				</div>
+            </div>
+        </div>
+		
+        <div id="essential" class="resource-group">
+            <div class="essential-resources">
+                <div class="essential-grid">
+                    
+                    <div class="resource-card">
+                        <h3>Spansh</h3>
+                        <div class="resource-category">Route Planning & Navigation</div>
+                        <p>Advanced neutron route plotting, fleet carrier management, and galactic navigation tools for efficient long-distance travel.</p>
+                        <a href="https://spansh.co.uk" target="_blank" class="resource-link">Visit Spansh.co.uk</a>
+                    </div>
+
+                    <div class="resource-card">
+                        <h3>Inara</h3>
+                        <div class="resource-category">Pilot Database & Market Intelligence</div>
+                        <p>Comprehensive pilot profiles, squadron management, market data, and galactic trade information for informed commercial decisions.</p>
+                        <a href="https://inara.cz/elite" target="_blank" class="resource-link">Visit Inara.cz/elite</a>
+                    </div>
+
+                    <div class="resource-card">
+                        <h3>Coriolis Shipyard</h3>
+                        <div class="resource-category">Ship Outfitting & Configuration</div>
+                        <p>Professional ship building and configuration tool for optimizing vessel performance and operational specifications.</p>
+                        <a href="https://coriolis.io" target="_blank" class="resource-link">Visit Coriolis.io</a>
+                    </div>
+
+                    <div class="resource-card">
+                        <h3>EDSY</h3>
+                        <div class="resource-category">Advanced Ship Engineering</div>
+                        <p>Detailed engineering calculator and outfitting planner for precise ship configuration and performance optimization.</p>
+                        <a href="https://edsy.org" target="_blank" class="resource-link">Visit EDSY.org</a>
+                    </div>
+
+                    <div class="resource-card">
+                        <h3>ED Astro</h3>
+                        <div class="resource-category">Exploration & Discovery</div>
+                        <p>Galactic cartography and exploration database featuring detailed stellar cartography and discovery records.</p>
+                        <a href="https://edastro.com" target="_blank" class="resource-link">Visit EDastro.com</a>
+                    </div>
+
+                    <div class="resource-card">
+                        <h3>CMDR's Toolbox</h3>
+                        <div class="resource-category">Multi-Purpose Utilities</div>
+                        <p>Comprehensive suite of pilot utilities including trading tools, exploration aids, and mission planning resources for professional operations.</p>
+                        <a href="https://cmdrs-toolbox.com" target="_blank" class="resource-link">Visit CMDR's-Toolbox.com</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="specialized" class="resource-group">
+            <div class="resources-grid">
+                <div class="resource-card">
+                    <h3>ED Market Connector</h3>
+                    <div class="resource-category">Data Integration & Market Updates</div>
+                    <p>Essential ship system integration software for real-time market data transmission and automatic galactic database updates.</p>
+                    <a href="https://github.com/EDCD/EDMarketConnector/releases" target="_blank" class="resource-link">Download EDMC</a>
+                </div>
+
+				<div class="resource-card">
+					<h3>Elite Dangerous Discovery / EDD Lite</h3>
+					<div class="resource-category">Multi-Purpose Utilities</div>
+					<p>Comprehensive suite of pilot utilities and data displays for Elite Dangerous.</p>
+					<a href="https://github.com/EDDiscovery/EDDiscovery/releases" target="_blank" class="resource-link">Download EDD/EDDLite</a>
+				</div>
+
+            </div>
+        </div>
+
+		<div id="EDMC Plugins" class="resource-group">
+            <div class="resources-grid">
+                <div class="resource-card">
+					<h3>FCMS Plugin</h3>
+					<div class="resource-category">EDMC Plugins</div>
+					<p>The EDMC plugin to allow the FCMS website to function for your carrier.</p>
+					<a href="https://github.com/anthonylangsworth/FCMS/releases" target="_blank" class="resource-link">Download FCMS</a>
+				</div>
+				
+				<div class="resource-card">
+					<h3>Elite Dangerous: Recon</h3>
+					<div class="resource-category">EDMC Plugins</div>
+					<p>EDR is available as a plugin for Elite Dangerous Market Connector (EDMC). EDMC is a third party companion app for Elite: Dangerous whose main purpose is to collect market information for traders. It also provides integrations with well-known Elite: Dangerous third party websites, e.g. Inara, Elite Dangerous Star Map, Coriolis, etc.</p>
+					<a href="https://edrecon.com/edmc-plugin" target="_blank" class="resource-link">Download EDR</a>
+				</div>
+			</div>
+		</div>
+        <div id="all" class="resource-group active">
+            <div class="resources-grid">
+                <div class="resource-card">
+                    <h3>Hull Seals</h3>
+                    <div class="resource-category">Emergency Assistance</div>
+                    <p>Professional emergency repair services providing critical hull integrity restoration for stranded vessels across the galaxy.</p>
+                    <a href="https://hullseals.space" target="_blank" class="resource-link">Visit HullSeals.space</a>
+                </div>
+
+				<div class="resource-card">
+					<h3>Fuel Rats</h3>
+					<div class="resource-category">Emergency Assistance</div>
+					<p>Professional emergency fuel delivery for stranded vessels across the galaxy.</p>
+					<a href="https://fuelrats.com/" target="_blank" class="resource-link">Visit FuelRats.com</a>
+				</div>
+				
+				<div class="resource-card">
+					<h3>Tritium Monkeys</h3>
+					<div class="resource-category">Emergency Assistance</div>
+					<p>Professional emergency fuel delivery for stranded Fleet Carriers across the galaxy.</p>
+					<a href="https://www.tritiummonkeys.com/" target="_blank" class="resource-link">Visit TritiumMonkeys.com</a>
+				</div>				
+	
+                <div class="resource-card">
+                    <h3>Spansh</h3>
+                    <div class="resource-category">Route Planning & Navigation</div>
+                    <p>Advanced neutron route plotting, fleet carrier management, and galactic navigation tools for efficient long-distance travel.</p>
+                    <a href="https://spansh.co.uk" target="_blank" class="resource-link">Visit Spansh.co.uk</a>
+                </div>
+
+                <div class="resource-card">
+                    <h3>Inara</h3>
+                    <div class="resource-category">Pilot Database & Market Intelligence</div>
+                    <p>Comprehensive pilot profiles, squadron management, market data, and galactic trade information for informed commercial decisions.</p>
+                    <a href="https://inara.cz/elite" target="_blank" class="resource-link">Visit Inara.cz/elite</a>
+                </div>
+
+                <div class="resource-card">
+                    <h3>Coriolis Shipyard</h3>
+                    <div class="resource-category">Ship Outfitting & Configuration</div>
+                    <p>Professional ship building and configuration tool for optimizing vessel performance and operational specifications.</p>
+                    <a href="https://coriolis.io" target="_blank" class="resource-link">Visit Coriolis.io</a>
+                </div>
+
+                <div class="resource-card">
+                    <h3>EDSY</h3>
+                    <div class="resource-category">Advanced Ship Engineering</div>
+                    <p>Detailed engineering calculator and outfitting planner for precise ship configuration and performance optimization.</p>
+                    <a href="https://edsy.org" target="_blank" class="resource-link">Visit EDSY.org</a>
+                </div>
+
+                <div class="resource-card">
+                    <h3>ED Astro</h3>
+                    <div class="resource-category">Exploration & Discovery</div>
+                    <p>Galactic cartography and exploration database featuring detailed stellar cartography and discovery records.</p>
+                    <a href="https://edastro.com" target="_blank" class="resource-link">Visit EDastro.com</a>
+                </div>
+
+                <div class="resource-card">
+                    <h3>CMDR's Toolbox</h3>
+                    <div class="resource-category">Multi-Purpose Utilities</div>
+                    <p>Comprehensive suite of pilot utilities including trading tools, exploration aids, and mission planning resources for professional operations.</p>
+                    <a href="https://cmdrs-toolbox.com" target="_blank" class="resource-link">Visit CMDR's-Toolbox.com</a>
+                </div>
+
+                <div class="resource-card">
+                    <h3>ED Market Connector</h3>
+                    <div class="resource-category">Data Integration & Market Updates</div>
+                    <p>Essential ship system integration software for real-time market data transmission and automatic galactic database updates.</p>
+                    <a href="https://github.com/EDCD/EDMarketConnector/releases" target="_blank" class="resource-link">Download EDMC</a>
+                </div>
+				<div class="resource-card">
+					<h3>Elite Dangerous Discovery / EDD Lite</h3>
+					<div class="resource-category">Multi-Purpose Utilities</div>
+					<p>Comprehensive suite of pilot utilities and data displays for Elite Dangerous.</p>
+					<a href="https://github.com/EDDiscovery/EDDiscovery/releases" target="_blank" class="resource-link">Download EDD/EDDLite</a>
+				</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Fleet Operations</h3>
+                <a href="#">Commercial Transport Solutions</a>
+                <a href="#">Deep Space Exploration</a>
+                <a href="#">Alliance Defense Contracts</a>
+                <a href="https://coriolis.io">Custom Configuration Services</a>
+                <a href="https://inara.cz/elite/nearest-stations/?formbrief=1&ps1=Synuefe+PA-L+d9-30&pi13=&pi14=0&pi15=0&pi16=&pi1=0&pi18=0&pi19=0&pi17=0&pa1%5B%5D=32&ps2=&pi25=0&pi8=&pi9=0&pi26=0&pi3=&pi4=0&pi5=0&pi7=0&pi23=0&pi6=0&ps3=&pi24=0" target="_blank">Fleet Management Systems</a>
+            </div>
+            <div class="footer-section">
+                <h3>Technical Support</h3>
+                <a href="#">Engineering Documentation</a>
+                <a href="#">Certified Training Programs</a>
+                <a href="#">Authorized Service Centers</a>
+                <a href="#">Parts & Components</a>
+                <a href="#" class="warranty-link" onclick="openWarrantyPopup(); return false;">Warranty Services</a>
+            </div>
+			<!-- Warranty Popup-->
+			    <div class="popup-overlay" id="warrantyPopup" onclick="closeWarrantyPopup(event)">
+        <div class="popup-container" onclick="event.stopPropagation()">
+            <div class="popup-header">
+                <h2 class="popup-title">Warranty Services</h2>
+                <button class="close-btn" onclick="closeWarrantyPopup()">&times;</button>
+            </div>
+            
+            <div class="popup-content">
+                <h3>No Warranties Provided</h3>
+                <p><span class="company-name">Lakon Spaceways</span> operates in the vast expanse of space where conditions are unpredictable and dangers are constant.</p>
+                
+                <p><strong>All services and products are provided "AS IS" without any warranties, express or implied.</strong></p>
+                
+                <p>This includes but is not limited to:</p>
+                <ul>
+                    <li>Ship hull integrity during transport</li>
+                    <li>Cargo protection from pirate interdiction</li>
+                    <li>Delivery timeframes affected by stellar phenomena</li>
+                    <li>Equipment functionality in hostile environments</li>
+                </ul>
+                
+                <p>By engaging our services, you acknowledge the inherent risks of space travel and trade. <span class="company-name">Lakon Spaceways</span> shall not be liable for any damages, losses, or inconveniences resulting from our services.</p>
+                
+                <p><em>Safe travels, Commander. o7</em></p>
+            </div>
+        </div>		
+    </div>
+            <div class="footer-section">
+                <h3>Corporate Information</h3>
+                <p>Lakon Spaceways headquarters are located in the Alioth system, with manufacturing facilities throughout Alliance space and authorized distributors across all inhabited regions.</p>
+                <a href="#">Corporate History</a>
+                <a href="#">Engineering Careers</a>
+                <a href="#">Investor Relations</a>
+                <a href="#">Media Resources</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 3310 Lakon Spaceways Ltd. | Engineering Excellence Since 3010 | All Rights Reserved</p>
+        </div>
+    </footer>
+
+    <script>
+        // Generate subtle star field
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            const numStars = 60;
+            
+            for (let i = 0; i < numStars; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 8 + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Fade in animation observer
+        const observerOptions = {
+            threshold: 0.15,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Initialize
+        createStars();
+
+        // Tab switching functionality
+        function showResourceGroup(groupId) {
+            // Hide all resource groups
+            document.querySelectorAll('.resource-group').forEach(group => {
+                group.classList.remove('active');
+            });
+            
+            // Remove active state from all tab buttons
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+            
+            // Show selected group
+            document.getElementById(groupId).classList.add('active');
+            
+            // Add active state to clicked button
+            event.target.classList.add('active');
+        }
+
+        // Make function globally available
+        window.showResourceGroup = showResourceGroup;
+		
+		// Warranty Popup
+        function openWarrantyPopup() {
+            document.getElementById('warrantyPopup').style.display = 'block';
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        }
+
+        function closeWarrantyPopup(event) {
+            // Close if clicking overlay or close button
+            if (event && event.target !== document.getElementById('warrantyPopup')) {
+                return;
+            }
+            
+            document.getElementById('warrantyPopup').style.display = 'none';
+            document.body.style.overflow = 'auto'; // Restore scrolling
+        }
+
+        // Close popup with Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeWarrantyPopup();
+            }
+        });
+    </script>
