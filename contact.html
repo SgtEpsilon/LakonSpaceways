@@ -660,299 +660,418 @@
             color: #e8eaed
             font-weight: bold;
         }
+		
+		 /* Main Content */
+        .contact-main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem 6rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6rem;
+        }
+
+        .contact-form {
+            background: rgba(120, 160, 200, 0.02);
+            border: 1px solid rgba(120, 160, 200, 0.15);
+            padding: 3rem;
+            position: relative;
+        }
+
+        .contact-form::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #78a0c8;
+        }
+
+        .form-title {
+            font-size: 1.4rem;
+            font-weight: 400;
+            margin-bottom: 2rem;
+            color: #78a0c8;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .form-group {
+            margin-bottom: 2rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.8rem;
+            color: #e8eaed;
+            font-weight: 400;
+            font-size: 0.95rem;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 1rem 1.2rem;
+            background: rgba(120, 160, 200, 0.02);
+            border: 1px solid rgba(120, 160, 200, 0.15);
+            color: #e8eaed;
+            font-family: 'Georgia', 'Times New Roman', serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #78a0c8;
+            background: rgba(120, 160, 200, 0.04);
+        }
+
+        input::placeholder, textarea::placeholder {
+            color: #78a0c8;
+            opacity: 0.6;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        select {
+            cursor: pointer;
+        }
+
+        .submit-btn {
+            background: transparent;
+            color: #78a0c8;
+            border: 2px solid #78a0c8;
+            padding: 1rem 3rem;
+            font-family: 'Georgia', 'Times New Roman', serif;
+            font-weight: 400;
+            font-size: 0.95rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .submit-btn:hover {
+            background: #78a0c8;
+            color: #0f1419;
+        }
+
+        .success-message {
+            background: rgba(120, 160, 200, 0.1);
+            border: 1px solid #78a0c8;
+            color: #78a0c8;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            display: none;
+            font-size: 0.95rem;
+            letter-spacing: 0.5px;
+        }
+
+        /* Contact Information */
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 3rem;
+        }
+
+        .info-section {
+            background: rgba(120, 160, 200, 0.02);
+            border: 1px solid rgba(120, 160, 200, 0.15);
+            padding: 2.5rem;
+            position: relative;
+        }
+
+        .info-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #78a0c8;
+        }
+
+        .info-section h3 {
+            font-size: 1.2rem;
+            font-weight: 400;
+            margin-bottom: 1.5rem;
+            color: #78a0c8;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .info-section p {
+            color: #b8bcc0;
+            margin-bottom: 1rem;
+            line-height: 1.7;
+        }
+
+        .info-section a {
+            color: #78a0c8;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .info-section a:hover {
+            color: #ffffff;
+        }
+
+        .contact-details {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .contact-detail {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: #e8eaed;
+        }
+
+        .detail-label {
+            font-weight: 400;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            min-width: 100px;
+            opacity: 0.8;
+        }
+
+        /* GitHub Link Section */
+        .github-section {
+            background: rgba(120, 160, 200, 0.05);
+            border: 2px solid rgba(120, 160, 200, 0.2);
+            padding: 2rem;
+            text-align: center;
+            margin-top: 3rem;
+            position: relative;
+        }
+
+        .github-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #78a0c8;
+        }
+
+        .github-link {
+            display: inline-block;
+            padding: 1rem 3rem;
+            background: transparent;
+            color: #78a0c8;
+            text-decoration: none;
+            border: 2px solid #78a0c8;
+            font-weight: 400;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .github-link:hover {
+            background: #78a0c8;
+            color: #0f1419;
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(15, 20, 25, 0.95);
+            padding: 2rem;
+            border-top: 1px solid rgba(120, 160, 200, 0.2);
+            text-align: center;
+            color: #78a0c8;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .contact-main {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+                padding: 0 1.5rem 4rem;
+            }
+            
+            .contact-hero {
+                padding: 10rem 1.5rem 4rem;
+            }
+
+            .contact-form,
+            .info-section {
+                padding: 2rem;
+            }
+        }
+
+        /* Fade in animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
     </style>
 </head>
-<body>
-    <!-- Subtle background -->
-    <div class="background">
-        <div class="stars" id="stars"></div>
-    </div>
-
+<body> 
     <!-- Navigation -->
     <nav>
         <div class="nav-container">
             <div class="logo">Lakon Spaceways</div>
             <ul class="nav-links">
-                <li><a href="#home">Home</a></li>
-                <li><a href="#fleet">Fleet</a></li>
-                <li><a href="#heritage">Heritage</a></li>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="index.html#fleet">Fleet</a></li>
+                <li><a href="index.html#heritage">Heritage</a></li>
                 <li><a href="resources.html">Resources</a></li>
                 <li><a href="contact.html">Contact</a></li>
             </ul>
         </div>
     </nav>
-
-    <!-- Hero Section -->
-    <section class="hero" id="home">
-        <div class="hero-content">
-            <div class="hero-subtitle">Established 3010</div>
-            <h1>Lakon Spaceways</h1>
-            <p>For over three centuries, Lakon Spaceways has remained the premier manufacturer of commercial spacecraft, delivering uncompromising quality, reliability, and performance to pilots across the galaxy.</p>
-            <a href="#fleet" class="cta-button">View Fleet</a>
-        </div>
+ <!-- Contact Hero -->
+    <section class="contact-hero fade-in">
+        <div class="contact-subtitle">Professional Communication</div>
+        <h1>Contact Operations</h1>
+        <p>Reach our fleet operations team for commercial inquiries, technical support, and partnership opportunities across Alliance space.</p>
     </section>
 
-    <!-- Fleet Section -->
-    <section id="fleet">
-        <div class="section-header fade-in">
-            <h2>Engineering Excellence</h2>
-            <p>Each vessel in our fleet represents decades of refinement and innovation, designed to meet the demanding requirements of professional space operations.</p>
+    <!-- Main Contact Content -->
+    <main class="contact-main">
+        <div class="contact-form fade-in">
+            <h2 class="form-title">Operational Inquiry</h2>
+            <div class="success-message" id="successMessage">
+                Message transmitted successfully. Our operations team will respond within 24 standard hours.
+            </div>
+            
+            <div class="form-group">
+                <label for="name">Commander Name</label>
+                <input type="text" id="name" name="name" required placeholder="Enter your designation">
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Communication Channel</label>
+                <input type="email" id="email" name="email" required placeholder="your.callsign@example.com">
+            </div>
+            
+            <div class="form-group">
+                <label for="ship">Vessel Registration</label>
+                <input type="text" id="ship" name="ship" placeholder="Ship ID or Registration (Optional)">
+            </div>
+            
+            <div class="form-group">
+                <label for="inquiry">Service Category</label>
+                <select id="inquiry" name="inquiry">
+                    <option value="general">General Information</option>
+                    <option value="commercial">Commercial Transport Solutions</option>
+                    <option value="passenger">Passenger Transport Services</option>
+                    <option value="charter">Private Charter Operations</option>
+                    <option value="maintenance">Fleet Maintenance Support</option>
+                    <option value="partnership">Corporate Partnership</option>
+                    <option value="employment">Career Opportunities</option>
+                    <option value="technical">Technical Support</option>
+                    <option value="defense">Alliance Defense Contracts</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="message">Message Content</label>
+                <textarea id="message" name="message" required placeholder="Provide details of your operational requirements, route specifications, or service needs..."></textarea>
+            </div>
+            
+            <button type="submit" class="submit-btn" onclick="submitForm()">
+                Transmit Message
+            </button>
         </div>
-        
-        <div class="fleet-grid">
-            <div class="ship-card fade-in">
-                <h3>Alliance Challenger</h3>
-                <div class="ship-class">Medium Combat Vessel</div>
-                <p>Developed in partnership with Alliance Naval Architects. Combines Lakon's engineering heritage with advanced military specifications and tactical systems.</p>
-                <div class="specifications">
-                    <div class="spec-title">Specifications</div>
-                    <div class="spec-list">
-                        <div class="spec-item">Hardpoints: 6</div>
-                        <div class="spec-item">FSD: Class 5</div>
-						<div class="spec-item">Jump: 42.05 ly</div>
-                        <div class="spec-item">Mass: 450t</div>
-                        <div class="spec-item">Crew: 2</div>
+
+        <div class="contact-info">
+            <div class="info-section fade-in">
+                <h3>Operations Center</h3>
+                <p>Lakon Spaceways maintains primary operations centers throughout Alliance space, with our headquarters facility located in the Alioth system.</p>
+                <div class="contact-details">
+                    <div class="contact-detail">
+                        <span class="detail-label">Location:</span>
+                        <span>Alioth System, Alliance Space</span>
+                    </div>
+                    <div class="contact-detail">
+                        <span class="detail-label">Standard:</span>
+                        <span>24/7 Operations Support</span>
+                    </div>
+                    <div class="contact-detail">
+                        <span class="detail-label">Response:</span>
+                        <span>Within 24 Standard Hours</span>
                     </div>
                 </div>
             </div>
 
-            <div class="ship-card fade-in">
-                <h3>Alliance Chieftain</h3>
-                <div class="ship-class">Medium Combat Vessel</div>
-                <p>The premier Alliance combat platform featuring superior firepower distribution and enhanced maneuverability. Designed for tactical superiority in contested space.</p>
-                <div class="specifications">
-                    <div class="spec-title">Specifications</div>
-                    <div class="spec-list">
-                        <div class="spec-item">Hardpoints: 8</div>
-                        <div class="spec-item">FSD: Class 5</div>
-						<div class="spec-item">Jump: 46.92 ly</div>
-                        <div class="spec-item">Mass: 400t</div>
-                        <div class="spec-item">Crew: 2</div>
+            <div class="info-section fade-in">
+                <h3>Service Departments</h3>
+                <p>Our specialized departments provide comprehensive support for all aspects of spacecraft operations and fleet management.</p>
+                <div class="contact-details">
+                    <div class="contact-detail">
+                        <span class="detail-label">Sales:</span>
+                        <span>New vessel acquisitions and configurations</span>
+                    </div>
+                    <div class="contact-detail">
+                        <span class="detail-label">Support:</span>
+                        <span>Technical assistance and maintenance</span>
+                    </div>
+                    <div class="contact-detail">
+                        <span class="detail-label">Training:</span>
+                        <span>Certified pilot and crew programs</span>
+                    </div>
+                    <div class="contact-detail">
+                        <span class="detail-label">Parts:</span>
+                        <span>Authorized components and upgrades</span>
                     </div>
                 </div>
             </div>
 
-            <div class="ship-card fade-in">
-                <h3>Alliance Crusader</h3>
-                <div class="ship-class">Multi-Role Combat Vessel</div>
-                <p>Versatile Alliance warship optimized for extended operations. Features enhanced defensive systems and expanded cargo capacity for sustained military campaigns.</p>
-                <div class="specifications">
-                    <div class="spec-title">Specifications</div>
-                    <div class="spec-list">
-                        <div class="spec-item">Hardpoints: 6</div>
-                        <div class="spec-item">FSD: Class 6</div>
-						<div class="spec-item">Jump: 40.26 ly</div>
-                        <div class="spec-item">Mass: 500t</div>
-                        <div class="spec-item">Crew: 2</div>
+            <div class="info-section fade-in">
+                <h3>Emergency Assistance</h3>
+                <p>For immediate emergency assistance, contact the appropriate rescue service directly:</p>
+                <div class="contact-details">
+                    <div class="contact-detail">
+                        <span class="detail-label">Fuel:</span>
+                        <span><a href="https://fuelrats.com" target="_blank">Fuel Rats Emergency Service</a></span>
                     </div>
-                </div>
-            </div>
-            
-            <div class="ship-card fade-in">
-                <h3>ASP Explorer</h3>
-                <div class="ship-class">Deep Space Explorer</div>
-                <p>Renowned throughout the galaxy for exceptional long-range capabilities. The vessel of choice for professional explorers and scientific expeditions.</p>
-                <div class="specifications">
-                    <div class="spec-title">Specifications</div>
-                    <div class="spec-list">
-                        <div class="spec-item">Jump: 134.33 ly</div>
-                        <div class="spec-item">FSD: Class 5</div>
-                        <div class="spec-item">Mass: 280t</div>
-                        <div class="spec-item">Crew: 2</div>
+                    <div class="contact-detail">
+                        <span class="detail-label">Hull:</span>
+                        <span><a href="https://hullseals.space" target="_blank">Hull Seals Repair Service</a></span>
                     </div>
-                </div>
-            </div>
-
-            <div class="ship-card fade-in">
-                <h3>ASP Scout</h3>
-                <div class="ship-class">Light Explorer</div>
-                <p>Compact reconnaissance platform built on the proven ASP architecture. Optimized for rapid deployment and covert operations in unexplored territories.</p>
-                <div class="specifications">
-                    <div class="spec-title">Specifications</div>
-                    <div class="spec-list">
-                        <div class="spec-item">Jump: 96.31 ly</div>
-                        <div class="spec-item">FSD: Class 5</div>
-                        <div class="spec-item">Mass: 234t</div>
-                        <div class="spec-item">Crew: 2</div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="ship-card fade-in">
-                <h3>Diamondback Explorer</h3>
-                <div class="ship-class">Compact Explorer</div>
-                <p>Sophisticated exploration platform featuring advanced thermal management and optimized power distribution for extended autonomous operations.</p>
-                <div class="specifications">
-                    <div class="spec-title">Specifications</div>
-                    <div class="spec-list">
-                        <div class="spec-item">Jump: 161.13 ly</div>
-                        <div class="spec-item">FSD: Class 5</div>
-                        <div class="spec-item">Mass: 260t</div>
-                        <div class="spec-item">Crew: 1</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="ship-card fade-in">
-                <h3>Diamondback Scout</h3>
-                <div class="ship-class">Light Multi-Role</div>
-                <p>Agile reconnaissance vessel combining exploration capabilities with defensive armament. Features enhanced sensor arrays and stealth characteristics.</p>
-                <div class="specifications">
-                    <div class="spec-title">Specifications</div>
-                    <div class="spec-list">
-                        <div class="spec-item">Jump: 94.19 ly</div>
-                        <div class="spec-item">FSD: Class 4</div>
-                        <div class="spec-item">Mass: 170t</div>
-                        <div class="spec-item">Crew: 1</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="ship-card fade-in">
-                <h3>Keelback</h3>
-                <div class="ship-class">Armed Transport</div>
-                <p>Versatile cargo vessel with defensive capabilities. Features fighter bay compatibility and robust construction for operations in contested trade routes.</p>
-                <div class="specifications">
-                    <div class="spec-title">Specifications</div>
-                    <div class="spec-list">
-                        <div class="spec-item">Cargo: 84 tonnes</div>
-                        <div class="spec-item">FSD: Class 4</div>
-                        <div class="spec-item">Mass: 180t</div>
-                        <div class="spec-item">Crew: 2</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="ship-card fade-in">
-                <h3>Type-6 Transporter</h3>
-                <div class="ship-class">Light Transport</div>
-                <p>An accessible entry point into commercial space operations without compromising on the quality and dependability that defines the Lakon brand.</p>
-                <div class="specifications">
-                    <div class="spec-title">Specifications</div>
-                    <div class="spec-list">
-                        <div class="spec-item">Cargo capacity: 106 tonnes</div>
-                        <div class="spec-item">FSD: Class 5</div>
-                        <div class="spec-item">Mass: 155t</div>
-                        <div class="spec-item">Crew: 1</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="ship-card fade-in">
-                <h3>Type-7 Transporter</h3>
-                <div class="ship-class">Medium Transport</div>
-                <p>The backbone of interstellar commerce. Offers an optimal balance of cargo capacity, operational efficiency, and navigational flexibility for established trade routes.</p>
-                <div class="specifications">
-                    <div class="spec-title">Specifications</div>
-                    <div class="spec-list">
-                        <div class="spec-item">Cargo capacity: 302 tonnes</div>
-                        <div class="spec-item">FSD: Class 6</div>
-                        <div class="spec-item">Mass: 420t</div>
-                        <div class="spec-item">Crew: 1</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="ship-card fade-in">
-                <h3>Type-8 Transporter</h3>
-                <div class="ship-class">Heavy Transport</div>
-                <p>Advanced cargo platform bridging the gap between medium and super-heavy transport operations. Features enhanced structural integrity and improved fuel efficiency.</p>
-                <div class="specifications">
-                    <div class="spec-title">Specifications</div>
-                    <div class="spec-list">
-                        <div class="spec-item">Cargo capacity: 390 tonnes</div>
-                        <div class="spec-item">FSD: Class 7</div>
-                        <div class="spec-item">Mass: 650t</div>
-                        <div class="spec-item">Crew: 2</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="ship-card fade-in">
-                <h3>Type-9 Heavy</h3>
-                <div class="ship-class">Super Heavy Transport</div>
-                <p>The definitive solution for large-scale cargo operations. Engineered for maximum payload capacity while maintaining the structural integrity and reliability standards expected from Lakon Spaceways.</p>
-                <div class="specifications">
-                    <div class="spec-title">Specifications</div>
-                    <div class="spec-list">
-                        <div class="spec-item">Cargo capacity: 758 tonnes</div>
-                        <div class="spec-item">FSD: Class 6</div>
-                        <div class="spec-item">Mass: 1,000t</div>
-                        <div class="spec-item">Crew: 3</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="ship-card fade-in">
-                <h3>Type-10 Defender</h3>
-                <div class="ship-class">Heavy Combat Transport</div>
-                <p>Military-grade defensive platform built on the Type-9 chassis. Combines massive firepower with substantial cargo capacity for military supply operations.</p>
-                <div class="specifications">
-                    <div class="spec-title">Specifications</div>
-                    <div class="spec-list">
-                        <div class="spec-item">Hardpoints: 9</div>
-						<div class="spec-item">Cargo capacity: 470 tonnes</div>
-                        <div class="spec-item">FSD: Class 6</div>
-                        <div class="spec-item">Mass: 1,200t</div>
-                        <div class="spec-item">Crew: 3</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="ship-card fade-in coming-soon">
-                <div class="coming-soon-banner">Coming Soon</div>
-                <h3>Type-11 Prospector</h3>
-                <div class="ship-class">Deep Space Mining Vessel</div>
-                <p>Revolutionary mining platform featuring advanced ore processing systems and extended operational range. Designed for autonomous deep space resource extraction missions.</p>
-                <div class="specifications">
-                    <div class="spec-title">Projected Specifications</div>
-                    <div class="spec-list">
-                        <div class="spec-item">Mining: Advanced</div>
-                        <div class="spec-item">FSD: Class 7</div>
-                        <div class="spec-item">Mass: 850t</div>
-                        <div class="spec-item">Crew: 4</div>
+                    <div class="contact-detail">
+                        <span class="detail-label">Carrier:</span>
+                        <span><a href="https://www.tritiummonkeys.com" target="_blank">Tritium Monkeys Service</a></span>
                     </div>
                 </div>
             </div>
         </div>
+    </main>
+
+    <!-- GitHub Section -->
+    <section class="github-section fade-in">
+        <h3 style="color: #78a0c8; margin-bottom: 1rem; font-weight: 400; letter-spacing: 1px; text-transform: uppercase;">Technical Documentation</h3>
+        <p style="color: #b8bcc0; margin-bottom: 2rem; line-height: 1.7;">Access comprehensive fleet documentation, technical specifications, and engineering resources.</p>
+        <a href="https://github.com/SgtEpsilon/LakonSpaceways/issues" target="_blank" class="github-link">
+            View Documentation Repository
+        </a>
     </section>
-
-    <!-- Heritage Section -->
-    <section class="heritage fade-in" id="heritage">
-        <div class="section-header">
-            <h2>Three Centuries of Excellence</h2>
-            <p>Since our founding in 3010, Lakon Spaceways has maintained an unwavering commitment to engineering excellence and operational reliability.</p>
-        </div>
-        
-        <div class="heritage-content">
-            <div class="heritage-text">
-                <p>Established during the early expansion period, Lakon Spaceways emerged from the vision of creating spacecraft that would enable humanity's growth among the stars. Our founders, a consortium of experienced engineers and former naval architects, established principles of design integrity and manufacturing excellence that continue to guide our operations today.</p>
-                
-                <p>Through economic fluctuations, technological revolutions, and the changing demands of galactic commerce, Lakon has remained steadfast in delivering vessels that operators can depend upon. Our commitment extends beyond the initial sale to encompass comprehensive support throughout each vessel's operational lifetime.</p>
-            </div>
-            
-            <div class="stats-grid">
-                <div class="stat">
-                    <span class="stat-number">300+</span>
-                    <span class="stat-label">Years of Operation</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-number">47.2M</span>
-                    <span class="stat-label">Vessels Delivered</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-number">99.7%</span>
-                    <span class="stat-label">Operational Reliability</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-number">1,200+</span>
-                    <span class="stat-label">Systems Served</span>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
+ <!-- Footer -->
     <footer id="contact">
         <div class="footer-content">
             <div class="footer-section">
@@ -1011,9 +1130,9 @@
         <div class="footer-bottom">
             <p>© 3310 Lakon Spaceways Ltd. | Engineering Excellence Since 3010 | All Rights Reserved</p>
         </div>
-    </footer>
+    </footer> 
 
-    <script>
+ <script>
         // Generate subtle star field
         function createStars() {
             const starsContainer = document.getElementById('stars');
@@ -1064,6 +1183,25 @@
         // Initialize
         createStars();
 
+        // Tab switching functionality
+        function showResourceGroup(groupId) {
+            // Hide all resource groups
+            document.querySelectorAll('.resource-group').forEach(group => {
+                group.classList.remove('active');
+            });
+            
+            // Remove active state from all tab buttons
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+            
+            // Show selected group
+            document.getElementById(groupId).classList.add('active');
+            
+            // Add active state to clicked button
+            event.target.classList.add('active');
+        }
+
         // Make function globally available
         window.showResourceGroup = showResourceGroup;
 		
@@ -1090,5 +1228,3 @@
             }
         });
     </script>
-</body>
-</html>

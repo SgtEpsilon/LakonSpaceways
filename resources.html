@@ -673,281 +673,217 @@
         <div class="nav-container">
             <div class="logo">Lakon Spaceways</div>
             <ul class="nav-links">
-                <li><a href="#home">Home</a></li>
-                <li><a href="#fleet">Fleet</a></li>
-                <li><a href="#heritage">Heritage</a></li>
+                <li><a href="index.html#home">Home</a></li>
+                <li><a href="index.html#fleet">Fleet</a></li>
+                <li><a href="index.html#heritage">Heritage</a></li>
                 <li><a href="resources.html">Resources</a></li>
                 <li><a href="contact.html">Contact</a></li>
             </ul>
         </div>
     </nav>
-
-    <!-- Hero Section -->
-    <section class="hero" id="home">
-        <div class="hero-content">
-            <div class="hero-subtitle">Established 3010</div>
-            <h1>Lakon Spaceways</h1>
-            <p>For over three centuries, Lakon Spaceways has remained the premier manufacturer of commercial spacecraft, delivering uncompromising quality, reliability, and performance to pilots across the galaxy.</p>
-            <a href="#fleet" class="cta-button">View Fleet</a>
-        </div>
-    </section>
-
-    <!-- Fleet Section -->
-    <section id="fleet">
+	<!-- Resources Section -->
+    <section id="resources">
         <div class="section-header fade-in">
-            <h2>Engineering Excellence</h2>
-            <p>Each vessel in our fleet represents decades of refinement and innovation, designed to meet the demanding requirements of professional space operations.</p>
+            <h2>Pilot Resources</h2>
+            <p>Essential tools and databases recommended by professional pilots for fleet management, route planning, and galactic operations.</p>
         </div>
         
-        <div class="fleet-grid">
-            <div class="ship-card fade-in">
-                <h3>Alliance Challenger</h3>
-                <div class="ship-class">Medium Combat Vessel</div>
-                <p>Developed in partnership with Alliance Naval Architects. Combines Lakon's engineering heritage with advanced military specifications and tactical systems.</p>
-                <div class="specifications">
-                    <div class="spec-title">Specifications</div>
-                    <div class="spec-list">
-                        <div class="spec-item">Hardpoints: 6</div>
-                        <div class="spec-item">FSD: Class 5</div>
-						<div class="spec-item">Jump: 42.05 ly</div>
-                        <div class="spec-item">Mass: 450t</div>
-                        <div class="spec-item">Crew: 2</div>
-                    </div>
+		<!-- TAB CONTROLS -->
+        <div class="resource-tabs fade-in">
+			<button class="tab-button active" onclick="showResourceGroup('all')">All Resources</button>
+			<!-- On load, the 'all' tab only shows 6 of the resources available. need to find why it's only caching those-->
+			<button class="tab-button" onclick="showResourceGroup('emergency')">Emergency Assistance</button>
+            <button class="tab-button" onclick="showResourceGroup('essential')">Essential Resources</button>
+            <button class="tab-button" onclick="showResourceGroup('specialized')">Specialized Tools</button>
+			<button class="tab-button" onclick="showResourceGroup('EDMC Plugins')">EDMC Plugins</button>
+        </div>
+        <div id="emergency" class="resource-group">
+            <div class="resources-grid">
+                <div class="resource-card">
+                    <h3>Hull Seals</h3>
+                    <div class="resource-category">Emergency Assistance</div>
+                    <p>Professional emergency repair services providing critical hull integrity restoration for stranded vessels across the galaxy.</p>
+                    <a href="https://hullseals.space" target="_blank" class="resource-link">Visit HullSeals.space</a>
                 </div>
-            </div>
+				
+				<div class="resource-card">
+					<h3>Fuel Rats</h3>
+					<div class="resource-category">Emergency Assistance</div>
+					<p>Professional emergency fuel delivery for stranded vessels across the galaxy.</p>
+					<a href="https://fuelrats.com/" target="_blank" class="resource-link">Visit FuelRats.com</a>
+				</div>
 
-            <div class="ship-card fade-in">
-                <h3>Alliance Chieftain</h3>
-                <div class="ship-class">Medium Combat Vessel</div>
-                <p>The premier Alliance combat platform featuring superior firepower distribution and enhanced maneuverability. Designed for tactical superiority in contested space.</p>
-                <div class="specifications">
-                    <div class="spec-title">Specifications</div>
-                    <div class="spec-list">
-                        <div class="spec-item">Hardpoints: 8</div>
-                        <div class="spec-item">FSD: Class 5</div>
-						<div class="spec-item">Jump: 46.92 ly</div>
-                        <div class="spec-item">Mass: 400t</div>
-                        <div class="spec-item">Crew: 2</div>
-                    </div>
-                </div>
+				<div class="resource-card">
+					<h3>Tritium Monkeys</h3>
+					<div class="resource-category">Emergency Assistance</div>
+					<p>Professional emergency fuel delivery for stranded Fleet Carriers across the galaxy.</p>
+					<a href="https://www.tritiummonkeys.com/" target="_blank" class="resource-link">Visit TritiumMonkeys.com</a>
+				</div>
             </div>
+        </div>
+		
+        <div id="essential" class="resource-group">
+            <div class="essential-resources">
+                <div class="essential-grid">
+                    
+                    <div class="resource-card">
+                        <h3>Spansh</h3>
+                        <div class="resource-category">Route Planning & Navigation</div>
+                        <p>Advanced neutron route plotting, fleet carrier management, and galactic navigation tools for efficient long-distance travel.</p>
+                        <a href="https://spansh.co.uk" target="_blank" class="resource-link">Visit Spansh.co.uk</a>
+                    </div>
 
-            <div class="ship-card fade-in">
-                <h3>Alliance Crusader</h3>
-                <div class="ship-class">Multi-Role Combat Vessel</div>
-                <p>Versatile Alliance warship optimized for extended operations. Features enhanced defensive systems and expanded cargo capacity for sustained military campaigns.</p>
-                <div class="specifications">
-                    <div class="spec-title">Specifications</div>
-                    <div class="spec-list">
-                        <div class="spec-item">Hardpoints: 6</div>
-                        <div class="spec-item">FSD: Class 6</div>
-						<div class="spec-item">Jump: 40.26 ly</div>
-                        <div class="spec-item">Mass: 500t</div>
-                        <div class="spec-item">Crew: 2</div>
+                    <div class="resource-card">
+                        <h3>Inara</h3>
+                        <div class="resource-category">Pilot Database & Market Intelligence</div>
+                        <p>Comprehensive pilot profiles, squadron management, market data, and galactic trade information for informed commercial decisions.</p>
+                        <a href="https://inara.cz/elite" target="_blank" class="resource-link">Visit Inara.cz/elite</a>
                     </div>
-                </div>
-            </div>
-            
-            <div class="ship-card fade-in">
-                <h3>ASP Explorer</h3>
-                <div class="ship-class">Deep Space Explorer</div>
-                <p>Renowned throughout the galaxy for exceptional long-range capabilities. The vessel of choice for professional explorers and scientific expeditions.</p>
-                <div class="specifications">
-                    <div class="spec-title">Specifications</div>
-                    <div class="spec-list">
-                        <div class="spec-item">Jump: 134.33 ly</div>
-                        <div class="spec-item">FSD: Class 5</div>
-                        <div class="spec-item">Mass: 280t</div>
-                        <div class="spec-item">Crew: 2</div>
-                    </div>
-                </div>
-            </div>
 
-            <div class="ship-card fade-in">
-                <h3>ASP Scout</h3>
-                <div class="ship-class">Light Explorer</div>
-                <p>Compact reconnaissance platform built on the proven ASP architecture. Optimized for rapid deployment and covert operations in unexplored territories.</p>
-                <div class="specifications">
-                    <div class="spec-title">Specifications</div>
-                    <div class="spec-list">
-                        <div class="spec-item">Jump: 96.31 ly</div>
-                        <div class="spec-item">FSD: Class 5</div>
-                        <div class="spec-item">Mass: 234t</div>
-                        <div class="spec-item">Crew: 2</div>
+                    <div class="resource-card">
+                        <h3>Coriolis Shipyard</h3>
+                        <div class="resource-category">Ship Outfitting & Configuration</div>
+                        <p>Professional ship building and configuration tool for optimizing vessel performance and operational specifications.</p>
+                        <a href="https://coriolis.io" target="_blank" class="resource-link">Visit Coriolis.io</a>
                     </div>
-                </div>
-            </div>
-            
-            <div class="ship-card fade-in">
-                <h3>Diamondback Explorer</h3>
-                <div class="ship-class">Compact Explorer</div>
-                <p>Sophisticated exploration platform featuring advanced thermal management and optimized power distribution for extended autonomous operations.</p>
-                <div class="specifications">
-                    <div class="spec-title">Specifications</div>
-                    <div class="spec-list">
-                        <div class="spec-item">Jump: 161.13 ly</div>
-                        <div class="spec-item">FSD: Class 5</div>
-                        <div class="spec-item">Mass: 260t</div>
-                        <div class="spec-item">Crew: 1</div>
-                    </div>
-                </div>
-            </div>
 
-            <div class="ship-card fade-in">
-                <h3>Diamondback Scout</h3>
-                <div class="ship-class">Light Multi-Role</div>
-                <p>Agile reconnaissance vessel combining exploration capabilities with defensive armament. Features enhanced sensor arrays and stealth characteristics.</p>
-                <div class="specifications">
-                    <div class="spec-title">Specifications</div>
-                    <div class="spec-list">
-                        <div class="spec-item">Jump: 94.19 ly</div>
-                        <div class="spec-item">FSD: Class 4</div>
-                        <div class="spec-item">Mass: 170t</div>
-                        <div class="spec-item">Crew: 1</div>
+                    <div class="resource-card">
+                        <h3>EDSY</h3>
+                        <div class="resource-category">Advanced Ship Engineering</div>
+                        <p>Detailed engineering calculator and outfitting planner for precise ship configuration and performance optimization.</p>
+                        <a href="https://edsy.org" target="_blank" class="resource-link">Visit EDSY.org</a>
                     </div>
-                </div>
-            </div>
 
-            <div class="ship-card fade-in">
-                <h3>Keelback</h3>
-                <div class="ship-class">Armed Transport</div>
-                <p>Versatile cargo vessel with defensive capabilities. Features fighter bay compatibility and robust construction for operations in contested trade routes.</p>
-                <div class="specifications">
-                    <div class="spec-title">Specifications</div>
-                    <div class="spec-list">
-                        <div class="spec-item">Cargo: 84 tonnes</div>
-                        <div class="spec-item">FSD: Class 4</div>
-                        <div class="spec-item">Mass: 180t</div>
-                        <div class="spec-item">Crew: 2</div>
+                    <div class="resource-card">
+                        <h3>ED Astro</h3>
+                        <div class="resource-category">Exploration & Discovery</div>
+                        <p>Galactic cartography and exploration database featuring detailed stellar cartography and discovery records.</p>
+                        <a href="https://edastro.com" target="_blank" class="resource-link">Visit EDastro.com</a>
                     </div>
-                </div>
-            </div>
 
-            <div class="ship-card fade-in">
-                <h3>Type-6 Transporter</h3>
-                <div class="ship-class">Light Transport</div>
-                <p>An accessible entry point into commercial space operations without compromising on the quality and dependability that defines the Lakon brand.</p>
-                <div class="specifications">
-                    <div class="spec-title">Specifications</div>
-                    <div class="spec-list">
-                        <div class="spec-item">Cargo capacity: 106 tonnes</div>
-                        <div class="spec-item">FSD: Class 5</div>
-                        <div class="spec-item">Mass: 155t</div>
-                        <div class="spec-item">Crew: 1</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="ship-card fade-in">
-                <h3>Type-7 Transporter</h3>
-                <div class="ship-class">Medium Transport</div>
-                <p>The backbone of interstellar commerce. Offers an optimal balance of cargo capacity, operational efficiency, and navigational flexibility for established trade routes.</p>
-                <div class="specifications">
-                    <div class="spec-title">Specifications</div>
-                    <div class="spec-list">
-                        <div class="spec-item">Cargo capacity: 302 tonnes</div>
-                        <div class="spec-item">FSD: Class 6</div>
-                        <div class="spec-item">Mass: 420t</div>
-                        <div class="spec-item">Crew: 1</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="ship-card fade-in">
-                <h3>Type-8 Transporter</h3>
-                <div class="ship-class">Heavy Transport</div>
-                <p>Advanced cargo platform bridging the gap between medium and super-heavy transport operations. Features enhanced structural integrity and improved fuel efficiency.</p>
-                <div class="specifications">
-                    <div class="spec-title">Specifications</div>
-                    <div class="spec-list">
-                        <div class="spec-item">Cargo capacity: 390 tonnes</div>
-                        <div class="spec-item">FSD: Class 7</div>
-                        <div class="spec-item">Mass: 650t</div>
-                        <div class="spec-item">Crew: 2</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="ship-card fade-in">
-                <h3>Type-9 Heavy</h3>
-                <div class="ship-class">Super Heavy Transport</div>
-                <p>The definitive solution for large-scale cargo operations. Engineered for maximum payload capacity while maintaining the structural integrity and reliability standards expected from Lakon Spaceways.</p>
-                <div class="specifications">
-                    <div class="spec-title">Specifications</div>
-                    <div class="spec-list">
-                        <div class="spec-item">Cargo capacity: 758 tonnes</div>
-                        <div class="spec-item">FSD: Class 6</div>
-                        <div class="spec-item">Mass: 1,000t</div>
-                        <div class="spec-item">Crew: 3</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="ship-card fade-in">
-                <h3>Type-10 Defender</h3>
-                <div class="ship-class">Heavy Combat Transport</div>
-                <p>Military-grade defensive platform built on the Type-9 chassis. Combines massive firepower with substantial cargo capacity for military supply operations.</p>
-                <div class="specifications">
-                    <div class="spec-title">Specifications</div>
-                    <div class="spec-list">
-                        <div class="spec-item">Hardpoints: 9</div>
-						<div class="spec-item">Cargo capacity: 470 tonnes</div>
-                        <div class="spec-item">FSD: Class 6</div>
-                        <div class="spec-item">Mass: 1,200t</div>
-                        <div class="spec-item">Crew: 3</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="ship-card fade-in coming-soon">
-                <div class="coming-soon-banner">Coming Soon</div>
-                <h3>Type-11 Prospector</h3>
-                <div class="ship-class">Deep Space Mining Vessel</div>
-                <p>Revolutionary mining platform featuring advanced ore processing systems and extended operational range. Designed for autonomous deep space resource extraction missions.</p>
-                <div class="specifications">
-                    <div class="spec-title">Projected Specifications</div>
-                    <div class="spec-list">
-                        <div class="spec-item">Mining: Advanced</div>
-                        <div class="spec-item">FSD: Class 7</div>
-                        <div class="spec-item">Mass: 850t</div>
-                        <div class="spec-item">Crew: 4</div>
+                    <div class="resource-card">
+                        <h3>CMDR's Toolbox</h3>
+                        <div class="resource-category">Multi-Purpose Utilities</div>
+                        <p>Comprehensive suite of pilot utilities including trading tools, exploration aids, and mission planning resources for professional operations.</p>
+                        <a href="https://cmdrs-toolbox.com" target="_blank" class="resource-link">Visit CMDR's-Toolbox.com</a>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
 
-    <!-- Heritage Section -->
-    <section class="heritage fade-in" id="heritage">
-        <div class="section-header">
-            <h2>Three Centuries of Excellence</h2>
-            <p>Since our founding in 3010, Lakon Spaceways has maintained an unwavering commitment to engineering excellence and operational reliability.</p>
-        </div>
-        
-        <div class="heritage-content">
-            <div class="heritage-text">
-                <p>Established during the early expansion period, Lakon Spaceways emerged from the vision of creating spacecraft that would enable humanity's growth among the stars. Our founders, a consortium of experienced engineers and former naval architects, established principles of design integrity and manufacturing excellence that continue to guide our operations today.</p>
-                
-                <p>Through economic fluctuations, technological revolutions, and the changing demands of galactic commerce, Lakon has remained steadfast in delivering vessels that operators can depend upon. Our commitment extends beyond the initial sale to encompass comprehensive support throughout each vessel's operational lifetime.</p>
+        <div id="specialized" class="resource-group">
+            <div class="resources-grid">
+                <div class="resource-card">
+                    <h3>ED Market Connector</h3>
+                    <div class="resource-category">Data Integration & Market Updates</div>
+                    <p>Essential ship system integration software for real-time market data transmission and automatic galactic database updates.</p>
+                    <a href="https://github.com/EDCD/EDMarketConnector/releases" target="_blank" class="resource-link">Download EDMC</a>
+                </div>
+
+				<div class="resource-card">
+					<h3>Elite Dangerous Discovery / EDD Lite</h3>
+					<div class="resource-category">Multi-Purpose Utilities</div>
+					<p>Comprehensive suite of pilot utilities and data displays for Elite Dangerous.</p>
+					<a href="https://github.com/EDDiscovery/EDDiscovery/releases" target="_blank" class="resource-link">Download EDD/EDDLite</a>
+				</div>
+
             </div>
-            
-            <div class="stats-grid">
-                <div class="stat">
-                    <span class="stat-number">300+</span>
-                    <span class="stat-label">Years of Operation</span>
+        </div>
+
+		<div id="EDMC Plugins" class="resource-group">
+            <div class="resources-grid">
+                <div class="resource-card">
+					<h3>FCMS Plugin</h3>
+					<div class="resource-category">EDMC Plugins</div>
+					<p>The EDMC plugin to allow the FCMS website to function for your carrier.</p>
+					<a href="https://github.com/anthonylangsworth/FCMS/releases" target="_blank" class="resource-link">Download FCMS</a>
+				</div>
+				
+				<div class="resource-card">
+					<h3>Elite Dangerous: Recon</h3>
+					<div class="resource-category">EDMC Plugins</div>
+					<p>EDR is available as a plugin for Elite Dangerous Market Connector (EDMC). EDMC is a third party companion app for Elite: Dangerous whose main purpose is to collect market information for traders. It also provides integrations with well-known Elite: Dangerous third party websites, e.g. Inara, Elite Dangerous Star Map, Coriolis, etc.</p>
+					<a href="https://edrecon.com/edmc-plugin" target="_blank" class="resource-link">Download EDR</a>
+				</div>
+			</div>
+		</div>
+        <div id="all" class="resource-group active">
+            <div class="resources-grid">
+                <div class="resource-card">
+                    <h3>Hull Seals</h3>
+                    <div class="resource-category">Emergency Assistance</div>
+                    <p>Professional emergency repair services providing critical hull integrity restoration for stranded vessels across the galaxy.</p>
+                    <a href="https://hullseals.space" target="_blank" class="resource-link">Visit HullSeals.space</a>
                 </div>
-                <div class="stat">
-                    <span class="stat-number">47.2M</span>
-                    <span class="stat-label">Vessels Delivered</span>
+
+				<div class="resource-card">
+					<h3>Fuel Rats</h3>
+					<div class="resource-category">Emergency Assistance</div>
+					<p>Professional emergency fuel delivery for stranded vessels across the galaxy.</p>
+					<a href="https://fuelrats.com/" target="_blank" class="resource-link">Visit FuelRats.com</a>
+				</div>
+				
+				<div class="resource-card">
+					<h3>Tritium Monkeys</h3>
+					<div class="resource-category">Emergency Assistance</div>
+					<p>Professional emergency fuel delivery for stranded Fleet Carriers across the galaxy.</p>
+					<a href="https://www.tritiummonkeys.com/" target="_blank" class="resource-link">Visit TritiumMonkeys.com</a>
+				</div>				
+	
+                <div class="resource-card">
+                    <h3>Spansh</h3>
+                    <div class="resource-category">Route Planning & Navigation</div>
+                    <p>Advanced neutron route plotting, fleet carrier management, and galactic navigation tools for efficient long-distance travel.</p>
+                    <a href="https://spansh.co.uk" target="_blank" class="resource-link">Visit Spansh.co.uk</a>
                 </div>
-                <div class="stat">
-                    <span class="stat-number">99.7%</span>
-                    <span class="stat-label">Operational Reliability</span>
+
+                <div class="resource-card">
+                    <h3>Inara</h3>
+                    <div class="resource-category">Pilot Database & Market Intelligence</div>
+                    <p>Comprehensive pilot profiles, squadron management, market data, and galactic trade information for informed commercial decisions.</p>
+                    <a href="https://inara.cz/elite" target="_blank" class="resource-link">Visit Inara.cz/elite</a>
                 </div>
-                <div class="stat">
-                    <span class="stat-number">1,200+</span>
-                    <span class="stat-label">Systems Served</span>
+
+                <div class="resource-card">
+                    <h3>Coriolis Shipyard</h3>
+                    <div class="resource-category">Ship Outfitting & Configuration</div>
+                    <p>Professional ship building and configuration tool for optimizing vessel performance and operational specifications.</p>
+                    <a href="https://coriolis.io" target="_blank" class="resource-link">Visit Coriolis.io</a>
                 </div>
+
+                <div class="resource-card">
+                    <h3>EDSY</h3>
+                    <div class="resource-category">Advanced Ship Engineering</div>
+                    <p>Detailed engineering calculator and outfitting planner for precise ship configuration and performance optimization.</p>
+                    <a href="https://edsy.org" target="_blank" class="resource-link">Visit EDSY.org</a>
+                </div>
+
+                <div class="resource-card">
+                    <h3>ED Astro</h3>
+                    <div class="resource-category">Exploration & Discovery</div>
+                    <p>Galactic cartography and exploration database featuring detailed stellar cartography and discovery records.</p>
+                    <a href="https://edastro.com" target="_blank" class="resource-link">Visit EDastro.com</a>
+                </div>
+
+                <div class="resource-card">
+                    <h3>CMDR's Toolbox</h3>
+                    <div class="resource-category">Multi-Purpose Utilities</div>
+                    <p>Comprehensive suite of pilot utilities including trading tools, exploration aids, and mission planning resources for professional operations.</p>
+                    <a href="https://cmdrs-toolbox.com" target="_blank" class="resource-link">Visit CMDR's-Toolbox.com</a>
+                </div>
+
+                <div class="resource-card">
+                    <h3>ED Market Connector</h3>
+                    <div class="resource-category">Data Integration & Market Updates</div>
+                    <p>Essential ship system integration software for real-time market data transmission and automatic galactic database updates.</p>
+                    <a href="https://github.com/EDCD/EDMarketConnector/releases" target="_blank" class="resource-link">Download EDMC</a>
+                </div>
+				<div class="resource-card">
+					<h3>Elite Dangerous Discovery / EDD Lite</h3>
+					<div class="resource-category">Multi-Purpose Utilities</div>
+					<p>Comprehensive suite of pilot utilities and data displays for Elite Dangerous.</p>
+					<a href="https://github.com/EDDiscovery/EDDiscovery/releases" target="_blank" class="resource-link">Download EDD/EDDLite</a>
+				</div>
             </div>
         </div>
     </section>
@@ -1064,6 +1000,25 @@
         // Initialize
         createStars();
 
+        // Tab switching functionality
+        function showResourceGroup(groupId) {
+            // Hide all resource groups
+            document.querySelectorAll('.resource-group').forEach(group => {
+                group.classList.remove('active');
+            });
+            
+            // Remove active state from all tab buttons
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+            
+            // Show selected group
+            document.getElementById(groupId).classList.add('active');
+            
+            // Add active state to clicked button
+            event.target.classList.add('active');
+        }
+
         // Make function globally available
         window.showResourceGroup = showResourceGroup;
 		
@@ -1090,5 +1045,3 @@
             }
         });
     </script>
-</body>
-</html>
