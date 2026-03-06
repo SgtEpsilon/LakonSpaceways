@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lakon Spaceways | Precision Spacecraft Engineering</title>
-	<link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css">
     <style>
+        /* ── Tool links ──────────────────────────────────────────────── */
         .ship-card .tool-links {
             display: flex;
             gap: 0.6rem;
@@ -24,15 +25,28 @@
             letter-spacing: 0.8px;
             text-transform: uppercase;
             font-family: 'Georgia', serif;
+            cursor: pointer;
             transition: all 0.25s ease;
             background: rgba(120, 160, 200, 0.05);
         }
-        .tool-link:hover {
+        .tool-link:hover:not(:disabled) {
             background: rgba(120, 160, 200, 0.15);
             border-color: rgba(120, 160, 200, 0.8);
             color: #b8d0e8;
         }
+        .tool-link:disabled { opacity: 0.4; cursor: not-allowed; }
+        .tool-link.loading { opacity: 0.6; }
         .tool-link svg { width: 12px; height: 12px; opacity: 0.7; }
+
+        /* ── Ship price ──────────────────────────────────────────────── */
+        .ship-price {
+            font-size: 0.78rem;
+            color: rgba(120, 160, 200, 0.55);
+            margin-top: 0.4rem;
+            letter-spacing: 0.5px;
+        }
+
+        /* ── Fleet loading placeholder ───────────────────────────────── */
         .fleet-loading {
             grid-column: 1 / -1;
             text-align: center;
@@ -42,45 +56,8 @@
             letter-spacing: 2px;
             text-transform: uppercase;
         }
-        .fleet-loading::after {
-            content: '';
-            display: block;
-            width: 40px;
-            height: 1px;
-            background: rgba(120, 160, 200, 0.4);
-            margin: 1.5rem auto 0;
-            animation: loadingPulse 1.5s ease-in-out infinite;
-        }
-        @keyframes loadingPulse {
-            0%, 100% { opacity: 0.2; transform: scaleX(0.5); }
-            50% { opacity: 1; transform: scaleX(1); }
-        }
-        .data-source-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.72rem;
-            color: rgba(120, 160, 200, 0.5);
-            letter-spacing: 0.8px;
-            text-transform: uppercase;
-            margin-top: 0.5rem;
-        }
-        .data-source-badge .dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: #4caf9a;
-            animation: pulse 2s ease-in-out infinite;
-        }
-        .data-source-badge .dot.offline { background: rgba(120,160,200,0.4); animation: none; }
-        @keyframes pulse { 0%,100%{opacity:.5} 50%{opacity:1} }
-        .section-header .data-status { margin-top: 1rem; }
-        .ship-price {
-            font-size: 0.78rem;
-            color: rgba(120, 160, 200, 0.55);
-            margin-top: 0.4rem;
-            letter-spacing: 0.5px;
-        }
+
+        /* ── Filter bar ──────────────────────────────────────────────── */
         .fleet-filters {
             display: flex;
             gap: 0.75rem;
@@ -105,6 +82,104 @@
             color: #78a0c8;
             background: rgba(120, 160, 200, 0.08);
         }
+
+        /* ── Spansh system input bar ─────────────────────────────────── */
+        .spansh-system-bar {
+            grid-column: 1 / -1;
+            margin-bottom: 1.5rem;
+        }
+        .spansh-bar-inner {
+            border: 1px solid rgba(120, 160, 200, 0.2);
+            background: rgba(120, 160, 200, 0.04);
+            padding: 1rem 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            flex-wrap: wrap;
+        }
+        .spansh-bar-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+            color: rgba(232, 234, 237, 0.55);
+            letter-spacing: 0.4px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .spansh-bar-label svg { width: 14px; height: 14px; opacity: 0.6; }
+        .spansh-bar-controls { display: flex; gap: 0.6rem; flex: 1; min-width: 220px; }
+        .spansh-system-input {
+            flex: 1;
+            background: rgba(15, 20, 25, 0.8);
+            border: 1px solid rgba(120, 160, 200, 0.3);
+            color: #e8eaed;
+            padding: 0.45rem 0.85rem;
+            font-family: 'Georgia', serif;
+            font-size: 0.85rem;
+            letter-spacing: 0.3px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .spansh-system-input::placeholder { color: rgba(232, 234, 237, 0.25); }
+        .spansh-system-input:focus { border-color: rgba(120, 160, 200, 0.7); }
+
+        /* ── Per-card Spansh results ──────────────────────────────────── */
+        .spansh-output {
+            margin-top: 1rem;
+            font-size: 0.78rem;
+        }
+        .spansh-header {
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: rgba(120, 160, 200, 0.5);
+            margin-bottom: 0.5rem;
+        }
+        .spansh-results { display: flex; flex-direction: column; gap: 0.35rem; }
+        .spansh-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.45rem 0.7rem;
+            background: rgba(120, 160, 200, 0.05);
+            border-left: 2px solid rgba(120, 160, 200, 0.2);
+        }
+        .spansh-station { display: flex; flex-direction: column; gap: 0.1rem; min-width: 0; }
+        .spansh-station-name {
+            color: #b8d0e8;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .spansh-system-name {
+            color: rgba(232, 234, 237, 0.4);
+            font-size: 0.72rem;
+        }
+        .spansh-meta {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 0.1rem;
+            flex-shrink: 0;
+            text-align: right;
+        }
+        .spansh-dist { color: #78a0c8; font-size: 0.78rem; white-space: nowrap; }
+        .spansh-pad  { color: rgba(232, 234, 237, 0.35); font-size: 0.7rem; }
+        .spansh-age  { color: rgba(232, 234, 237, 0.3); font-size: 0.68rem; }
+        .spansh-footer {
+            margin-top: 0.5rem;
+            font-size: 0.68rem;
+            color: rgba(232, 234, 237, 0.25);
+            letter-spacing: 0.3px;
+        }
+        .spansh-footer a { color: rgba(120, 160, 200, 0.5); text-decoration: none; }
+        .spansh-footer a:hover { color: #78a0c8; }
+        .spansh-loading { color: rgba(120, 160, 200, 0.5); letter-spacing: 1px; text-transform: uppercase; font-size: 0.72rem; padding: 0.5rem 0; }
+        .spansh-error  { color: rgba(200, 120, 120, 0.7); font-size: 0.75rem; padding: 0.4rem 0; line-height: 1.5; }
+        .spansh-empty  { color: rgba(232, 234, 237, 0.3); font-size: 0.75rem; padding: 0.4rem 0; font-style: italic; }
     </style>
 </head>
 <body>
@@ -136,7 +211,6 @@
         <div class="section-header fade-in">
             <h2>Engineering Excellence</h2>
             <p>Each vessel in our fleet represents decades of refinement and innovation, designed to meet the demanding requirements of professional space operations.</p>
-
         </div>
 
         <div class="fleet-filters fade-in" id="fleetFilters" style="display:none;">
@@ -179,7 +253,7 @@
                 <a href="#">Alliance Defense Contracts</a>
                 <a href="https://coriolis.io" target="_blank">Custom Configuration — Coriolis</a>
                 <a href="https://edsy.org" target="_blank">Ship Outfitting — EDSY</a>
-                <a href="https://inara.cz/elite/nearest-stations/?formbrief=1&ps1=Synuefe+PA-L+d9-30&pi13=&pi14=0&pi15=0&pi16=&pi1=0&pi18=0&pi19=0&pi17=0&pa1%5B%5D=32&ps2=&pi25=0&pi8=&pi9=0&pi26=0&pi3=&pi4=0&pi5=0&pi7=0&pi23=0&pi6=0&ps3=&pi24=0" target="_blank">Fleet Management Systems</a>
+                <a href="https://spansh.co.uk/stations" target="_blank">Station Search — Spansh</a>
             </div>
             <div class="footer-section">
                 <h3>Technical Support</h3>
