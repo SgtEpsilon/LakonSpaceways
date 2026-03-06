@@ -40,7 +40,7 @@ const LAKON_FLEET = [
     category: 'combat',
     description: "Developed in partnership with Alliance Naval Architects. Combines Lakon's engineering heritage with advanced military specifications and tactical systems.",
     coriolisKey: 'alliance_challenger', coriolisBeta: false,
-    specs: { hardpoints: 6, cargo: null, fsdClass: 5, jumpRange: 42.05,  mass: 450,  crew: 2, price: 30_069_013 },
+    specs: { pad: 'M', hardpoints: 6, cargo: null, fsdClass: 5, jumpRange: 42.05,  mass: 450,  crew: 2, price: 30_069_013 },
   },
   {
     name: 'Alliance Chieftain',
@@ -49,7 +49,7 @@ const LAKON_FLEET = [
     category: 'combat',
     description: 'The premier Alliance combat platform featuring superior firepower distribution and enhanced maneuverability. Designed for tactical superiority in contested space.',
     coriolisKey: 'alliance_chieftain', coriolisBeta: false,
-    specs: { hardpoints: 8, cargo: null, fsdClass: 5, jumpRange: 46.92,  mass: 400,  crew: 2, price: 19_382_250 },
+    specs: { pad: 'M', hardpoints: 8, cargo: null, fsdClass: 5, jumpRange: 46.92,  mass: 400,  crew: 2, price: 19_382_250 },
   },
   {
     name: 'Alliance Crusader',
@@ -58,7 +58,7 @@ const LAKON_FLEET = [
     category: 'multi-role',
     description: 'Versatile Alliance warship optimized for extended operations. Features enhanced defensive systems and expanded cargo capacity for sustained military campaigns.',
     coriolisKey: 'alliance_crusader', coriolisBeta: false,
-    specs: { hardpoints: 6, cargo: null, fsdClass: 6, jumpRange: 40.26,  mass: 500,  crew: 2, price: 23_975_290 },
+    specs: { pad: 'M', hardpoints: 6, cargo: null, fsdClass: 6, jumpRange: 40.26,  mass: 500,  crew: 2, price: 23_975_290 },
   },
   {
     name: 'ASP Explorer',
@@ -67,7 +67,7 @@ const LAKON_FLEET = [
     category: 'exploration',
     description: 'Renowned throughout the galaxy for exceptional long-range capabilities. The vessel of choice for professional explorers and scientific expeditions.',
     coriolisKey: 'asp', coriolisBeta: false,
-    specs: { hardpoints: 4, cargo: 28,  fsdClass: 5, jumpRange: 134.33, mass: 280,  crew: 2, price: 6_661_153 },
+    specs: { pad: 'M', hardpoints: 4, cargo: 28,  fsdClass: 5, jumpRange: 134.33, mass: 280,  crew: 2, price: 6_661_153 },
   },
   {
     name: 'ASP Scout',
@@ -76,7 +76,7 @@ const LAKON_FLEET = [
     category: 'exploration',
     description: 'Compact reconnaissance platform built on the proven ASP architecture. Optimized for rapid deployment and covert operations in unexplored territories.',
     coriolisKey: 'asp_scout', coriolisBeta: false,
-    specs: { hardpoints: 4, cargo: 16,  fsdClass: 5, jumpRange: 96.31,  mass: 234,  crew: 2, price: 3_961_154 },
+    specs: { pad: 'M', hardpoints: 4, cargo: 16,  fsdClass: 5, jumpRange: 96.31,  mass: 234,  crew: 2, price: 3_961_154 },
   },
   {
     name: 'Diamondback Explorer',
@@ -85,7 +85,7 @@ const LAKON_FLEET = [
     category: 'exploration',
     description: 'Sophisticated exploration platform featuring advanced thermal management and optimized power distribution for extended autonomous operations.',
     coriolisKey: 'diamondback_explorer', coriolisBeta: false,
-    specs: { hardpoints: 4, cargo: 12,  fsdClass: 5, jumpRange: 161.13, mass: 260,  crew: 1, price: 1_894_760 },
+    specs: { pad: 'S', hardpoints: 4, cargo: 12,  fsdClass: 5, jumpRange: 161.13, mass: 260,  crew: 1, price: 1_894_760 },
   },
   {
     name: 'Diamondback Scout',
@@ -94,7 +94,7 @@ const LAKON_FLEET = [
     category: 'multi-role',
     description: 'Agile reconnaissance vessel combining exploration capabilities with defensive armament. Features enhanced sensor arrays and stealth characteristics.',
     coriolisKey: 'diamondback', coriolisBeta: false,
-    specs: { hardpoints: 4, cargo: 8,   fsdClass: 4, jumpRange: 94.19,  mass: 170,  crew: 1, price: 564_328 },
+    specs: { pad: 'S', hardpoints: 4, cargo: 8,   fsdClass: 4, jumpRange: 94.19,  mass: 170,  crew: 1, price: 564_328 },
   },
   {
     name: 'Keelback',
@@ -103,7 +103,7 @@ const LAKON_FLEET = [
     category: 'transport',
     description: 'Versatile cargo vessel with defensive capabilities. Features fighter bay compatibility and robust construction for operations in contested trade routes.',
     coriolisKey: 'keelback', coriolisBeta: false,
-    specs: { hardpoints: 4, cargo: 84,  fsdClass: 4, jumpRange: 50.51,  mass: 180,  crew: 2, price: 3_053_050 },
+    specs: { pad: 'M', hardpoints: 4, cargo: 84,  fsdClass: 4, jumpRange: 50.51,  mass: 180,  crew: 2, price: 3_053_050 },
   },
   {
     name: 'Type-6 Transporter',
@@ -112,7 +112,7 @@ const LAKON_FLEET = [
     category: 'transport',
     description: 'An accessible entry point into commercial space operations without compromising on the quality and dependability that defines the Lakon brand.',
     coriolisKey: 'type_6_transporter', coriolisBeta: false,
-    specs: { hardpoints: 2, cargo: 106, fsdClass: 5, jumpRange: 113.72, mass: 155,  crew: 1, price: 1_045_945 },
+    specs: { pad: 'M', hardpoints: 2, cargo: 106, fsdClass: 5, jumpRange: 113.72, mass: 155,  crew: 1, price: 1_045_945 },
   },
   {
     name: 'Type-7 Transporter',
@@ -121,7 +121,7 @@ const LAKON_FLEET = [
     category: 'transport',
     description: 'The backbone of interstellar commerce. Offers an optimal balance of cargo capacity, operational efficiency, and navigational flexibility for established trade routes.',
     coriolisKey: 'type_7_transport', coriolisBeta: false,
-    specs: { hardpoints: 2, cargo: 302, fsdClass: 6, jumpRange: 76.52,  mass: 420,  crew: 1, price: 17_472_252 },
+    specs: { pad: 'L', hardpoints: 2, cargo: 302, fsdClass: 6, jumpRange: 76.52,  mass: 420,  crew: 1, price: 17_472_252 },
   },
   {
     name: 'Type-8 Transporter',
@@ -130,7 +130,7 @@ const LAKON_FLEET = [
     category: 'transport',
     description: 'Advanced cargo platform bridging the gap between medium and super-heavy transport operations. Features enhanced structural integrity and improved fuel efficiency.',
     coriolisKey: 'type_8_transporter', coriolisBeta: false,
-    specs: { hardpoints: 2, cargo: 390, fsdClass: 7, jumpRange: 64.32,  mass: 650,  crew: 2, price: 47_970_000 },
+    specs: { pad: 'L', hardpoints: 2, cargo: 390, fsdClass: 7, jumpRange: 64.32,  mass: 650,  crew: 2, price: 47_970_000 },
   },
   {
     name: 'Type-9 Heavy',
@@ -139,7 +139,7 @@ const LAKON_FLEET = [
     category: 'transport',
     description: 'The definitive solution for large-scale cargo operations. Engineered for maximum payload capacity while maintaining the structural integrity and reliability standards expected from Lakon Spaceways.',
     coriolisKey: 'type_9_heavy', coriolisBeta: false,
-    specs: { hardpoints: 4, cargo: 758, fsdClass: 6, jumpRange: 48.58,  mass: 1000, crew: 3, price: 76_555_842 },
+    specs: { pad: 'L', hardpoints: 4, cargo: 758, fsdClass: 6, jumpRange: 48.58,  mass: 1000, crew: 3, price: 76_555_842 },
   },
   {
     name: 'Type-10 Defender',
@@ -148,7 +148,7 @@ const LAKON_FLEET = [
     category: 'combat',
     description: 'Military-grade defensive platform built on the Type-9 chassis. Combines massive firepower with substantial cargo capacity for military supply operations.',
     coriolisKey: 'type_10_defender', coriolisBeta: false,
-    specs: { hardpoints: 9, cargo: 470, fsdClass: 6, jumpRange: 40.19,  mass: 1200, crew: 3, price: 124_755_341 },
+    specs: { pad: 'L', hardpoints: 9, cargo: 470, fsdClass: 6, jumpRange: 40.19,  mass: 1200, crew: 3, price: 124_755_341 },
   },
   {
     name: 'Type-11 Prospector',
@@ -157,7 +157,7 @@ const LAKON_FLEET = [
     category: 'mining',
     description: 'Built upon the successful Type-8 platform, the Type-11 is engineered to redefine medium-sized mining efficiency. Bespoke modules, lightweight construction and a reinforced FSD housing grant superior management of overcharged Frame Shift Drives.',
     coriolisKey: 'type_11_prospector', coriolisBeta: true,
-    specs: { hardpoints: 5, cargo: 192, fsdClass: 5, jumpRange: null,   mass: 320,  crew: 3, price: 67_861_850 },
+    specs: { pad: 'M', hardpoints: 5, cargo: 192, fsdClass: 5, jumpRange: null,   mass: 320,  crew: 3, price: 67_861_850 },
   },
 ];
 
@@ -246,9 +246,12 @@ function renderStationResults(container, data) {
 
 // ─── HELPERS ──────────────────────────────────────────────────────────────────
 
+const PAD_SIZE_LABELS = { S: 'Small', M: 'Medium', L: 'Large' };
+
 function buildSpecItems(specs) {
   if (!specs) return [];
   const items = [];
+  if (specs.pad != null)        items.push(`Landing Pad: ${PAD_SIZE_LABELS[specs.pad] ?? specs.pad}`);
   if (specs.hardpoints != null) items.push(`Hardpoints: ${specs.hardpoints}`);
   if (specs.cargo != null)      items.push(`Cargo: ${specs.cargo} t`);
   if (specs.fsdClass != null)   items.push(`FSD: Class ${specs.fsdClass}`);
