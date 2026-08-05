@@ -4,24 +4,17 @@
  * Ship data is bundled (coriolis.io DNS is currently down; data doesn't change
  * except on game patches). Stats from EDCD/coriolis-data + INARA cross-check.
  *
- * LIVE DATA — Spansh Station Search (via Cloudflare Worker proxy)
+ * LIVE DATA — Spansh Station Search (via built-in server proxy)
  * ---------------------------------------------------------------
  * Spansh's API doesn't send CORS headers, so direct browser fetches are blocked.
- * Requests route through a tiny Cloudflare Worker that forwards the POST to
- * spansh.co.uk and injects the missing Access-Control-Allow-Origin header.
+ * Requests route through server.js's own /api/stations/search route, which
+ * forwards the POST to spansh.co.uk server-side. Since the site and the proxy
+ * are served from the same origin, there's no CORS issue to work around at all —
+ * PROXY_URL just stays empty and the fetch below hits a relative path.
  *
- * HOW TO SET UP (free, ~2 minutes):
- *   1. Go to https://dash.cloudflare.com
- *      → Workers & Pages → Create application → Create Worker
- *   2. Paste the contents of spansh-proxy/worker.js into the Quick Edit editor
- *      (replace the default hello-world code entirely)
- *   3. Click "Save and Deploy"
- *   4. Copy your worker URL — looks like:
- *        https://spansh-proxy.YOUR-SUBDOMAIN.workers.dev
- *   5. Set the PROXY_URL constant below to that URL
- *
- * The free Workers tier gives 100,000 requests/day — plenty for a fan site.
- * No credit card required for the free tier.
+ * If you ever host the static files somewhere separate from server.js (e.g. a
+ * CDN), set PROXY_URL to the full origin of wherever server.js is running,
+ * e.g. 'https://your-domain-or-tunnel-url.example'.
  *
  * TOOL LINKS
  * ----------
@@ -163,21 +156,14 @@ const LAKON_FLEET = [
 
 // ─── SPANSH STATION LOOKUP ────────────────────────────────────────────────────
 
-// ── Set this to your deployed Cloudflare Worker URL ──────────────────────────
-// See spansh-proxy/worker.js for deploy instructions (free, ~2 minutes).
-// Example: 'https://spansh-proxy.your-name.workers.dev'
-const PROXY_URL = '';   // <── PASTE YOUR WORKER URL HERE
+// Leave this empty to hit server.js's proxy route on the same origin
+// (the normal case). Only set it if the site is hosted separately from
+// server.js — see the comment block above for details.
+const PROXY_URL = '';
 
 const PAD_LABELS = { S: 'Small', M: 'Medium', L: 'Large' };
 
 async function findNearestStations(spanshName, referenceSystem) {
-  if (!PROXY_URL) {
-    throw new Error(
-      'Spansh proxy not configured. ' +
-      'Deploy spansh-proxy/worker.js to Cloudflare Workers and set PROXY_URL in fleet.js.'
-    );
-  }
-
   const body = {
     filters: {
       ships_sold: { value: [spanshName] },
@@ -194,7 +180,10 @@ async function findNearestStations(spanshName, referenceSystem) {
     body: JSON.stringify(body),
   });
 
-  if (!resp.ok) throw new Error(`Spansh proxy returned HTTP ${resp.status}`);
+  if (!resp.ok) {
+    const errText = await resp.text().catch(() => '');
+    throw new Error(`Spansh proxy returned HTTP ${resp.status}${errText ? ` — ${errText}` : ''}`);
+  }
   return resp.json();
 }
 
@@ -399,16 +388,7 @@ function renderFleet() {
           renderStationResults(output, data);
         } catch (err) {
           console.error('[LakonSpaceways] Spansh query failed:', err);
-          // Check specifically for the proxy-not-configured case
-          const isProxyMissing = err.message.includes('proxy not configured');
-          output.innerHTML = isProxyMissing
-            ? `<div class="spansh-error">
-                 Spansh proxy not set up yet.<br>
-                 <small>Deploy <code>spansh-proxy/worker.js</code> to Cloudflare Workers,
-                 then set <code>PROXY_URL</code> in <code>fleet.js</code>.<br>
-                 Full instructions are at the top of both files.</small>
-               </div>`
-            : `<div class="spansh-error">Query failed — check the system name and try again.<br><small>${err.message}</small></div>`;
+          output.innerHTML = `<div class="spansh-error">Query failed — check the system name and try again.<br><small>${err.message}</small></div>`;
         } finally {
           btn.disabled = false;
           btn.classList.remove('loading');
