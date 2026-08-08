@@ -41,6 +41,12 @@ require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
 const frontier = require('./frontier-auth');
+const {
+  normalizeMarket,
+  normalizeShipyard,
+  normalizeFleetCarrier,
+  normalizeCommunityGoals,
+} = require('./capi-normalize');
 
 const PORT = process.env.PORT || 3000;
 const SPANSH_BASE = 'https://spansh.co.uk';
@@ -224,6 +230,37 @@ app.get('/api/cmdr/fleet', async (req, res) => {
     res.status(err.status === 401 ? 401 : 502).json({ error: err.message });
   }
 });
+
+// Shared handler for the read-only cAPI tabs below: fetch, normalize, and
+// treat "no data yet" (404 — e.g. never docked, or no carrier owned) as a
+// normal { available: false } response rather than an error, since that's
+// an expected state, not a failure.
+function cmdrCapiRoute(path, normalize) {
+  return async (req, res) => {
+    try {
+      const raw = await frontier.capiFetch(req, path);
+      res.json(normalize(raw));
+    } catch (err) {
+      if (err.status === 404) return res.json({ available: false });
+      console.error(`[cmdr] ${path} fetch failed:`, err);
+      res.status(err.status === 401 ? 401 : 502).json({ error: err.message });
+    }
+  };
+}
+
+// GET /api/cmdr/market — commodities at the last station docked at.
+app.get('/api/cmdr/market', cmdrCapiRoute('/market', normalizeMarket));
+
+// GET /api/cmdr/shipyard — ships + outfitting modules at the last station docked at.
+app.get('/api/cmdr/shipyard', cmdrCapiRoute('/shipyard', normalizeShipyard));
+
+// GET /api/cmdr/fleetcarrier — carrier status, cargo, buy/sell orders, finances.
+// NB: Frontier only refreshes this on CarrierBuy / opening the carrier UI
+// in-game, with a ~15 min cooldown server-side, so don't poll this often.
+app.get('/api/cmdr/fleetcarrier', cmdrCapiRoute('/fleetcarrier', normalizeFleetCarrier));
+
+// GET /api/cmdr/communitygoals — active CGs and this commander's contribution.
+app.get('/api/cmdr/communitygoals', cmdrCapiRoute('/communitygoals', normalizeCommunityGoals));
 
 // Everything else: serve the static site files from this same folder.
 app.use(express.static(__dirname));

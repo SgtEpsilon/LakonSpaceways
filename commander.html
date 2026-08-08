@@ -65,7 +65,17 @@
         }
         .cmdr-logout:hover { color: #78a0c8; border-color: rgba(120, 160, 200, 0.7); }
 
-        .cmdr-fleet-grid { margin-top: 0; }
+        .cmdr-fleet-grid {
+            margin-top: 0;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+        @media (max-width: 900px) {
+            .cmdr-fleet-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 640px) {
+            .cmdr-fleet-grid { grid-template-columns: 1fr; }
+        }
         .cmdr-ship-card { position: relative; }
         .cmdr-ship-current { border-color: rgba(120, 160, 200, 0.6); }
         .cmdr-current-badge {
@@ -80,6 +90,112 @@
             text-transform: uppercase;
             padding: 0.2rem 0.6rem;
         }
+
+        /* ─── Commander sub-tabs ─────────────────────────────────────── */
+        .cmdr-tabs {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0;
+            margin-bottom: 3rem;
+            border-bottom: 1px solid rgba(120, 160, 200, 0.15);
+        }
+        .cmdr-tab-btn {
+            background: transparent;
+            border: none;
+            color: #b8bcc0;
+            padding: 0.9rem 1.6rem;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            transition: all 0.25s ease;
+            border-bottom: 2px solid transparent;
+            font-family: inherit;
+        }
+        .cmdr-tab-btn:hover { color: #78a0c8; }
+        .cmdr-tab-btn.active { color: #78a0c8; border-bottom-color: #78a0c8; }
+
+        .cmdr-tab-panel { display: none; animation: cmdrFadeIn 0.4s ease-in-out; }
+        .cmdr-tab-panel.active { display: block; }
+        @keyframes cmdrFadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+        .cmdr-panel-message {
+            text-align: center;
+            padding: 2.5rem 2rem;
+            border: 1px solid rgba(120, 160, 200, 0.15);
+            background: rgba(120, 160, 200, 0.02);
+            color: #b8bcc0;
+            line-height: 1.7;
+        }
+
+        .cmdr-subhead {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid rgba(120, 160, 200, 0.15);
+        }
+        .cmdr-subhead h2 {
+            font-size: 1.1rem;
+            font-weight: 400;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: #e8eaed;
+        }
+        .cmdr-subhead .cmdr-subhead-meta {
+            font-size: 0.8rem;
+            color: #78a0c8;
+            letter-spacing: 0.5px;
+        }
+
+        /* Simple data table used by Market / Shipyard */
+        .cmdr-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+        .cmdr-table th, .cmdr-table td {
+            text-align: left;
+            padding: 0.6rem 0.8rem;
+            border-bottom: 1px solid rgba(120, 160, 200, 0.1);
+        }
+        .cmdr-table th {
+            color: #78a0c8;
+            font-weight: 400;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+        }
+        .cmdr-table td { color: #e8eaed; }
+        .cmdr-table tr:hover td { background: rgba(120, 160, 200, 0.03); }
+        .cmdr-table-wrap { overflow-x: auto; margin-bottom: 2rem; }
+        .cmdr-num { text-align: right; font-variant-numeric: tabular-nums; }
+
+        .cmdr-stat-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+        .cmdr-stat {
+            border: 1px solid rgba(120, 160, 200, 0.15);
+            padding: 1.2rem;
+            text-align: center;
+        }
+        .cmdr-stat .cmdr-stat-value { font-size: 1.4rem; color: #78a0c8; letter-spacing: 0.5px; }
+        .cmdr-stat .cmdr-stat-label { font-size: 0.75rem; color: #b8bcc0; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 0.35rem; }
+
+        .cmdr-goal-card {
+            border: 1px solid rgba(120, 160, 200, 0.15);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .cmdr-goal-card h3 { color: #78a0c8; font-size: 1.05rem; font-weight: 400; letter-spacing: 0.5px; margin-bottom: 0.4rem; }
+        .cmdr-goal-meta { font-size: 0.8rem; color: #b8bcc0; margin-bottom: 0.9rem; }
+        .cmdr-goal-bar-track { height: 6px; background: rgba(120, 160, 200, 0.1); margin-bottom: 0.5rem; }
+        .cmdr-goal-bar-fill { height: 100%; background: #78a0c8; }
+        .cmdr-goal-progress { font-size: 0.8rem; color: #e8eaed; display: flex; justify-content: space-between; }
     </style>
 </head>
 <body>
