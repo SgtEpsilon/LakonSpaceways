@@ -1,3 +1,6 @@
 index-old.html
 .vs/*
 node*
+.env
+.env.*
+!.env.example
