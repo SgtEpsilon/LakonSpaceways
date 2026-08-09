@@ -1,5 +1,5 @@
 /**
- * commander.js — Frontier login + fleet view, with tabbed cAPI data
+ * commander.js — Frontier login + tabbed commander data
  *
  * Talks only to same-origin routes on server.js (/api/cmdr/*, /auth/*).
  * Never touches Frontier or holds any credential — the server does that.
@@ -9,36 +9,22 @@
  * no backend there to talk to. If the API routes 404, we say so plainly
  * instead of failing silently.
  *
- * Tabs (Fleet / Market / Shipyard / Fleet Carrier / Community Goals) are
- * lazy-loaded: each cAPI endpoint is only fetched the first time its tab
- * is opened, then cached in memory for the rest of the page's life. This
- * matters because Frontier has warned that hammering cAPI can trigger
- * rate limiting — there's no reason to fetch /shipyard or /fleetcarrier
- * for someone who never clicks those tabs.
+ * Each tab lazy-loads its own data on first click and caches it in
+ * `tabCache` for the rest of the page's lifetime, so switching back and
+ * forth doesn't re-hit the cAPI (server.js also caches /profile briefly,
+ * but /fleetcarrier and /communitygoals are separate endpoints not
+ * covered by that, and Frontier asks integrators not to poll them).
  */
 
-const state = document.getElementById('cmdrState');
-
-const TABS = [
-  { id: 'fleet', label: 'Fleet' },
-  { id: 'market', label: 'Market' },
-  { id: 'shipyard', label: 'Shipyard' },
-  { id: 'carrier', label: 'Fleet Carrier' },
-  { id: 'goals', label: 'Community Goals' },
-];
-
-// Per-tab cache: { loaded: bool, loading: bool, data: any }
+const stateEl = document.getElementById('cmdrState');
+const tabsEl = document.getElementById('cmdrTabs');
+const panelEl = document.getElementById('cmdrTabPanel');
 const tabCache = {};
 
 function showMessage(html) {
-  state.innerHTML = `<div class="cmdr-message fade-in">${html}</div>`;
-}
-
-function showLoggedOut() {
-  showMessage(`
-    <p>Log in with your Frontier account to view your current ships and fleet data, pulled live from the Companion API.</p>
-    <a href="/auth/login" class="cta-button">Login with Frontier</a>
-  `);
+  stateEl.innerHTML = `<div class="cmdr-message fade-in">${html}</div>`;
+  stateEl.style.display = '';
+  tabsEl.style.display = 'none';
 }
 
 function showNotConfigured() {
@@ -54,310 +40,285 @@ function showUnavailable() {
   `);
 }
 
-// ─── formatting helpers ─────────────────────────────────────────────────────
-
 function formatCredits(c) {
   if (c == null) return null;
   return `${c.toLocaleString()} Cr`;
 }
 
-// cAPI numeric fields sometimes arrive as strings; be forgiving.
-function fmtNum(n) {
-  if (n == null) return '—';
-  const num = Number(n);
-  return Number.isFinite(num) ? num.toLocaleString() : '—';
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
 
-function fmtCr(n) {
-  if (n == null) return '—';
-  const num = Number(n);
-  return Number.isFinite(num) ? `${num.toLocaleString()} Cr` : '—';
+// ─── Tabs ───────────────────────────────────────────────────────────────
+
+const TAB_LOADERS = {
+  fleet: loadFleet,
+  ranks: loadRanks,
+  location: loadLocation,
+  loadout: loadLoadout,
+  carrier: loadCarrier,
+  communitygoals: loadCommunityGoals,
+};
+
+function initTabs() {
+  stateEl.style.display = 'none';
+  tabsEl.style.display = '';
+  document.querySelectorAll('.cmdr-tab').forEach(btn => {
+    btn.addEventListener('click', () => activateTab(btn.dataset.tab));
+  });
+  activateTab('fleet');
 }
 
-function esc(s) {
-  return String(s ?? '').replace(/[&<>"']/g, c => ({
-    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
-  }[c]));
+function activateTab(tab) {
+  document.querySelectorAll('.cmdr-tab').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.tab === tab);
+  });
+  if (tabCache[tab]) {
+    paintPanel(tabCache[tab]);
+    return;
+  }
+  panelEl.innerHTML = '<p class="fleet-loading" style="animation:none; text-align:center;">Loading…</p>';
+  TAB_LOADERS[tab]();
 }
 
-// ─── shell: header + tab nav + panel container ──────────────────────────────
+// Injected content's .fade-in elements start at opacity:0 (see styles.css)
+// and are normally only revealed by the page-load-time IntersectionObserver
+// in scripts.js scrolling them into view. That observer never sees content
+// injected after the fact, so anything painted here has to be (re-)observed
+// explicitly — otherwise it renders but stays invisible forever, which is
+// exactly what "empty" tabs actually were: real content, opacity 0.
+function paintPanel(html) {
+  panelEl.innerHTML = html;
+  if (typeof observer !== 'undefined') {
+    panelEl.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+  } else {
+    // Fallback in case the shared observer isn't available for some reason
+    // (e.g. script load order) — better to show it immediately than risk
+    // the same invisible-content bug again.
+    panelEl.querySelectorAll('.fade-in').forEach(el => el.classList.add('visible'));
+  }
+}
 
-function renderShell(fleetData) {
-  const credits = formatCredits(fleetData.credits);
+function renderTab(tab, html) {
+  tabCache[tab] = html;
+  // Only paint if this tab is still the active one (guards against a slow
+  // request finishing after the person has already clicked elsewhere).
+  const activeBtn = document.querySelector('.cmdr-tab.active');
+  if (activeBtn && activeBtn.dataset.tab === tab) paintPanel(html);
+}
+
+function renderTabError(tab, message) {
+  renderTab(tab, `<p style="text-align:center; color:rgba(232,234,237,0.6);">${escapeHtml(message)}</p>`);
+}
+
+// ─── Fleet tab ──────────────────────────────────────────────────────────
+
+async function loadFleet() {
+  try {
+    const resp = await fetch('/api/cmdr/fleet');
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const data = await resp.json();
+    renderTab('fleet', renderFleetHtml(data));
+  } catch (err) {
+    console.error('[commander] fleet fetch failed:', err);
+    renderTabError('fleet', "Couldn't load fleet data.");
+  }
+}
+
+function renderFleetHtml(data) {
+  const credits = formatCredits(data.credits);
   const header = `
-    <div class="cmdr-header fade-in">
-      <div class="cmdr-name">CMDR ${esc(fleetData.commander ?? 'Unknown')}</div>
+    <div class="cmdr-header">
+      <div class="cmdr-name">CMDR ${escapeHtml(data.commander ?? 'Unknown')}</div>
       ${credits ? `<div class="cmdr-credits">${credits}</div>` : ''}
       <a href="/auth/logout" class="cmdr-logout">Logout</a>
     </div>
   `;
-
-  const tabsNav = `
-    <div class="cmdr-tabs">
-      ${TABS.map((t, i) => `<button type="button" class="cmdr-tab-btn${i === 0 ? ' active' : ''}" data-tab="${t.id}">${t.label}</button>`).join('')}
-    </div>
-  `;
-
-  const panels = TABS.map((t, i) => `<div class="cmdr-tab-panel${i === 0 ? ' active' : ''}" id="cmdrPanel-${t.id}"></div>`).join('');
-
-  state.innerHTML = `${header}${tabsNav}<div class="cmdr-tab-panels">${panels}</div>`;
-
-  state.querySelectorAll('.cmdr-tab-btn').forEach(btn => {
-    btn.addEventListener('click', () => activateTab(btn.dataset.tab, btn));
-  });
-
-  // Fleet tab is already loaded (it's the same /profile data used in the header).
-  tabCache.fleet = { loaded: true, loading: false, data: fleetData };
-  renderFleetPanel(fleetData);
-
-  if (typeof observer !== 'undefined') {
-    document.querySelectorAll('#cmdrState .fade-in').forEach(el => observer.observe(el));
-  }
-}
-
-function activateTab(tabId, btnEl) {
-  state.querySelectorAll('.cmdr-tab-btn').forEach(b => b.classList.remove('active'));
-  state.querySelectorAll('.cmdr-tab-panel').forEach(p => p.classList.remove('active'));
-  btnEl.classList.add('active');
-  document.getElementById(`cmdrPanel-${tabId}`).classList.add('active');
-
-  const cached = tabCache[tabId];
-  if (!cached || (!cached.loaded && !cached.loading)) {
-    loadTab(tabId);
-  }
-}
-
-async function loadTab(tabId) {
-  const panel = document.getElementById(`cmdrPanel-${tabId}`);
-  const endpoints = {
-    market: '/api/cmdr/market',
-    shipyard: '/api/cmdr/shipyard',
-    carrier: '/api/cmdr/fleetcarrier',
-    goals: '/api/cmdr/communitygoals',
-  };
-  const endpoint = endpoints[tabId];
-  if (!endpoint) return;
-
-  tabCache[tabId] = { loaded: false, loading: true, data: null };
-  panel.innerHTML = `<p class="fleet-loading" style="animation:none;">Loading…</p>`;
-
-  try {
-    const resp = await fetch(endpoint);
-    const body = await resp.json().catch(() => null);
-    if (!resp.ok) {
-      const detail = body?.error || `HTTP ${resp.status}`;
-      throw new Error(detail);
-    }
-    tabCache[tabId] = { loaded: true, loading: false, data: body };
-    renderTabPanel(tabId, body);
-  } catch (err) {
-    console.error(`[commander] ${tabId} fetch failed:`, err);
-    tabCache[tabId] = { loaded: false, loading: false, data: null };
-    panel.innerHTML = `
-      <div class="cmdr-panel-message">
-        Couldn't load this data.
-        <div style="margin-top:0.75rem; font-size:0.8rem; opacity:0.65; word-break:break-word;">${esc(err.message)}</div>
-      </div>
-    `;
-  }
-}
-
-function renderTabPanel(tabId, data) {
-  if (tabId === 'market') return renderMarketPanel(data);
-  if (tabId === 'shipyard') return renderShipyardPanel(data);
-  if (tabId === 'carrier') return renderCarrierPanel(data);
-  if (tabId === 'goals') return renderGoalsPanel(data);
-}
-
-// ─── Fleet panel (from /profile, already fetched) ───────────────────────────
-
-function renderFleetPanel(data) {
-  const panel = document.getElementById('cmdrPanel-fleet');
-  if (!data.ships.length) {
-    panel.innerHTML = `<div class="cmdr-panel-message">No ships found on file for this commander.</div>`;
-    return;
-  }
+  if (!data.ships.length) return `${header}<p style="text-align:center;">No ships found on file for this commander.</p>`;
 
   const cards = data.ships.map((ship, i) => `
     <div class="ship-card fade-in cmdr-ship-card ${ship.isCurrent ? 'cmdr-ship-current' : ''}" style="animation-delay:${(i % 4) * 0.08}s">
       ${ship.isCurrent ? '<div class="cmdr-current-badge">Current Ship</div>' : ''}
-      <h3>${esc(ship.name || formatShipType(ship.type))}</h3>
-      <div class="ship-class">${esc(formatShipType(ship.type))}</div>
+      <h3>${escapeHtml(ship.name || formatShipType(ship.type))}</h3>
+      <div class="ship-class">${escapeHtml(formatShipType(ship.type))}</div>
       ${ship.value != null ? `<div class="ship-price">Hull Value: ${(ship.value / 1_000_000).toFixed(2)}M Cr</div>` : ''}
       <div class="specifications">
         <div class="spec-list">
-          ${ship.starSystem ? `<div class="spec-item">System: ${esc(ship.starSystem)}</div>` : ''}
-          ${ship.station ? `<div class="spec-item">Station: ${esc(ship.station)}</div>` : ''}
+          ${ship.starSystem ? `<div class="spec-item">System: ${escapeHtml(ship.starSystem)}</div>` : ''}
+          ${ship.station ? `<div class="spec-item">Station: ${escapeHtml(ship.station)}</div>` : ''}
         </div>
       </div>
     </div>
   `).join('');
 
-  panel.innerHTML = `<div class="fleet-grid cmdr-fleet-grid">${cards}</div>`;
-  if (typeof observer !== 'undefined') {
-    panel.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+  return `${header}<div class="fleet-grid cmdr-fleet-grid">${cards}</div>`;
+}
+
+// ─── Ranks tab ──────────────────────────────────────────────────────────
+
+async function loadRanks() {
+  try {
+    const resp = await fetch('/api/cmdr/ranks');
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const data = await resp.json();
+    renderTab('ranks', renderRanksHtml(data));
+  } catch (err) {
+    console.error('[commander] ranks fetch failed:', err);
+    renderTabError('ranks', "Couldn't load rank data.");
   }
 }
 
-// ─── Market panel ────────────────────────────────────────────────────────────
+const RANK_LABELS = { combat: 'Combat', trade: 'Trade', explore: 'Exploration', cqc: 'CQC', empire: 'Empire', federation: 'Federation' };
 
-function renderMarketPanel(data) {
-  const panel = document.getElementById('cmdrPanel-market');
-  if (!data.available || !data.commodities.length) {
-    panel.innerHTML = `<div class="cmdr-panel-message">No market data on file — dock at a station's commodity market in-game, then reopen this tab.</div>`;
-    return;
+function renderRanksHtml(data) {
+  const cards = data.ranks.map(r => `
+    <div class="cmdr-rank-card fade-in">
+      <h4>${RANK_LABELS[r.category] || r.category}</h4>
+      <div class="cmdr-rank-name">${escapeHtml(r.name || '\u2014')}</div>
+      ${r.progress != null ? `
+        <div class="cmdr-rank-bar"><div class="cmdr-rank-bar-fill" style="width:${Math.max(0, Math.min(100, r.progress))}%;"></div></div>
+        <div class="cmdr-rank-pct">${r.progress}% to next rank</div>
+      ` : ''}
+    </div>
+  `).join('');
+  return `<div class="cmdr-rank-grid">${cards}</div>`;
+}
+
+// ─── Location tab ───────────────────────────────────────────────────────
+
+async function loadLocation() {
+  try {
+    const resp = await fetch('/api/cmdr/location');
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const data = await resp.json();
+    renderTab('location', renderLocationHtml(data));
+  } catch (err) {
+    console.error('[commander] location fetch failed:', err);
+    renderTabError('location', "Couldn't load location data.");
   }
+}
 
-  const rows = data.commodities.map(c => `
-    <tr>
-      <td>${esc(c.name)}</td>
-      <td>${esc(c.category ?? '—')}</td>
-      <td class="cmdr-num">${fmtCr(c.sellPrice)}</td>
-      <td class="cmdr-num">${fmtCr(c.buyPrice)}</td>
-      <td class="cmdr-num">${fmtNum(c.demand)}</td>
-      <td class="cmdr-num">${fmtNum(c.stock)}</td>
-    </tr>
+function renderLocationHtml(data) {
+  return `
+    <div class="cmdr-location-card fade-in">
+      <div class="cmdr-location-system">${escapeHtml(data.system || 'Unknown System')}</div>
+      ${data.station ? `<div class="cmdr-location-station">${escapeHtml(data.station)}</div>` : ''}
+      <div class="cmdr-location-docked">${data.docked ? 'Docked' : 'In Space'}</div>
+    </div>
+  `;
+}
+
+// ─── Loadout tab ────────────────────────────────────────────────────────
+
+async function loadLoadout() {
+  try {
+    const resp = await fetch('/api/cmdr/loadout');
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const data = await resp.json();
+    renderTab('loadout', renderLoadoutHtml(data));
+  } catch (err) {
+    console.error('[commander] loadout fetch failed:', err);
+    renderTabError('loadout', "Couldn't load loadout data.");
+  }
+}
+
+function renderLoadoutHtml(data) {
+  const header = `
+    <div class="cmdr-loadout-header">
+      <strong>${escapeHtml(data.shipName || formatShipType(data.shipType))}</strong>
+      ${data.shipName ? ` — ${escapeHtml(formatShipType(data.shipType))}` : ''}
+    </div>
+  `;
+  if (!data.modules.length) return `${header}<p style="text-align:center;">No module data available.</p>`;
+
+  const rows = data.modules.map(m => `
+    <div class="cmdr-module-row">
+      <span class="cmdr-module-slot">${escapeHtml(m.slot)}</span>
+      <span class="cmdr-module-name">${escapeHtml(m.name)}${m.on === false ? ' (off)' : ''}</span>
+      ${m.engineering ? `<span class="cmdr-module-eng">${escapeHtml(m.engineering.blueprint || 'Engineered')}${m.engineering.level ? ` G${m.engineering.level}` : ''}</span>` : ''}
+    </div>
   `).join('');
 
-  panel.innerHTML = `
-    <div class="cmdr-subhead">
-      <h2>Last Docked Market</h2>
-      <span class="cmdr-subhead-meta">${esc(data.station ?? 'Unknown station')}${data.system ? ` · ${esc(data.system)}` : ''}</span>
+  return `${header}<div class="cmdr-message" style="text-align:left;">${rows}</div>`;
+}
+
+// ─── Fleet carrier tab ──────────────────────────────────────────────────
+
+async function loadCarrier() {
+  try {
+    const resp = await fetch('/api/cmdr/carrier');
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const data = await resp.json();
+    renderTab('carrier', renderCarrierHtml(data));
+  } catch (err) {
+    console.error('[commander] carrier fetch failed:', err);
+    renderTabError('carrier', "Couldn't load fleet carrier data.");
+  }
+}
+
+function renderCarrierHtml(data) {
+  if (!data.owned) {
+    return `<p style="text-align:center;">No fleet carrier on file for this commander.</p>`;
+  }
+  const stats = [
+    ['Current System', data.currentSystem],
+    ['Balance', formatCredits(data.balance)],
+    ['Fuel', data.fuel != null ? `${data.fuel} / 1000 T` : null],
+    ['State', data.state],
+    ['Docking Access', data.dockingAccess],
+  ].filter(([, v]) => v != null);
+
+  const financeStats = data.finance ? [
+    ['Bank Balance', formatCredits(data.finance.bankBalance)],
+    ['Weekly Upkeep', formatCredits(data.finance.coreCost)],
+    ['Services Cost', formatCredits(data.finance.servicesCost)],
+  ].filter(([, v]) => v != null) : [];
+
+  return `
+    <div class="cmdr-carrier-header fade-in">
+      <div class="cmdr-carrier-callsign">${escapeHtml(data.callsign || 'Unknown Carrier')}</div>
+      ${data.vanityName ? `<div class="cmdr-carrier-name">${escapeHtml(data.vanityName)}</div>` : ''}
     </div>
-    <div class="cmdr-table-wrap">
-      <table class="cmdr-table">
-        <thead><tr><th>Commodity</th><th>Category</th><th class="cmdr-num">Sell</th><th class="cmdr-num">Buy</th><th class="cmdr-num">Demand</th><th class="cmdr-num">Stock</th></tr></thead>
-        <tbody>${rows}</tbody>
-      </table>
+    <div class="cmdr-stat-grid">
+      ${stats.map(([label, value]) => `
+        <div class="cmdr-stat"><div class="cmdr-stat-label">${label}</div><div class="cmdr-stat-value">${escapeHtml(value)}</div></div>
+      `).join('')}
+      ${financeStats.map(([label, value]) => `
+        <div class="cmdr-stat"><div class="cmdr-stat-label">${label}</div><div class="cmdr-stat-value">${escapeHtml(value)}</div></div>
+      `).join('')}
     </div>
   `;
 }
 
-// ─── Shipyard panel ──────────────────────────────────────────────────────────
+// ─── Community goals tab ────────────────────────────────────────────────
 
-function renderShipyardPanel(data) {
-  const panel = document.getElementById('cmdrPanel-shipyard');
-  if (!data.available) {
-    panel.innerHTML = `<div class="cmdr-panel-message">No shipyard data on file — visit a shipyard/outfitting station in-game, then reopen this tab.</div>`;
-    return;
+async function loadCommunityGoals() {
+  try {
+    const resp = await fetch('/api/cmdr/communitygoals');
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const data = await resp.json();
+    renderTab('communitygoals', renderCommunityGoalsHtml(data));
+  } catch (err) {
+    console.error('[commander] community goals fetch failed:', err);
+    renderTabError('communitygoals', "Couldn't load community goals.");
   }
-
-  const shipRows = data.ships.map(s => `
-    <tr><td>${esc(s.name)}</td><td class="cmdr-num">${fmtCr(s.basevalue)}</td></tr>
-  `).join('') || '<tr><td colspan="2">No ships available here.</td></tr>';
-
-  const moduleRows = data.moduleCategories.map(c => `
-    <tr>
-      <td>${esc(c.category)}</td>
-      <td class="cmdr-num">${fmtNum(c.count)}</td>
-      <td class="cmdr-num">${c.minCost != null ? fmtCr(c.minCost) : '—'}</td>
-      <td class="cmdr-num">${c.maxCost != null ? fmtCr(c.maxCost) : '—'}</td>
-    </tr>
-  `).join('') || '<tr><td colspan="4">No outfitting data available here.</td></tr>';
-
-  panel.innerHTML = `
-    <div class="cmdr-subhead">
-      <h2>Shipyard</h2>
-      <span class="cmdr-subhead-meta">${esc(data.station ?? 'Unknown station')}${data.system ? ` · ${esc(data.system)}` : ''}</span>
-    </div>
-    <div class="cmdr-table-wrap">
-      <table class="cmdr-table">
-        <thead><tr><th>Ship</th><th class="cmdr-num">Base Value</th></tr></thead>
-        <tbody>${shipRows}</tbody>
-      </table>
-    </div>
-
-    <div class="cmdr-subhead"><h2>Outfitting (${fmtNum(data.moduleCount)} modules)</h2></div>
-    <div class="cmdr-table-wrap">
-      <table class="cmdr-table">
-        <thead><tr><th>Category</th><th class="cmdr-num">Count</th><th class="cmdr-num">Min Cost</th><th class="cmdr-num">Max Cost</th></tr></thead>
-        <tbody>${moduleRows}</tbody>
-      </table>
-    </div>
-  `;
 }
 
-// ─── Fleet Carrier panel ─────────────────────────────────────────────────────
-
-function renderCarrierPanel(data) {
-  const panel = document.getElementById('cmdrPanel-carrier');
-  if (!data.available) {
-    panel.innerHTML = `<div class="cmdr-panel-message">No fleet carrier on file — this shows up once you own a carrier and have opened its management UI in-game at least once.</div>`;
-    return;
-  }
-
-  const name = data.vanityName || data.callsign || 'Carrier';
-  const stats = `
-    <div class="cmdr-stat-row">
-      <div class="cmdr-stat"><div class="cmdr-stat-value">${esc(data.currentSystem ?? '—')}</div><div class="cmdr-stat-label">Current System</div></div>
-      <div class="cmdr-stat"><div class="cmdr-stat-value">${esc(data.dockingAccess ?? '—')}</div><div class="cmdr-stat-label">Docking Access</div></div>
-      <div class="cmdr-stat"><div class="cmdr-stat-value">${data.fuel != null ? fmtNum(data.fuel) : '—'}</div><div class="cmdr-stat-label">Tritium Fuel</div></div>
-      <div class="cmdr-stat"><div class="cmdr-stat-value">${fmtCr(data.balance)}</div><div class="cmdr-stat-label">Balance</div></div>
-    </div>
-  `;
-
-  const cargoRows = data.cargo.map(c => `
-    <tr><td>${esc(c.name)}${c.stolen ? ' <span style="opacity:0.6">(stolen)</span>' : ''}</td><td class="cmdr-num">${fmtNum(c.qty)}</td></tr>
-  `).join('') || '<tr><td colspan="2">Cargo hold is empty.</td></tr>';
-
-  const orderRows = data.orders.map(o => `
-    <tr>
-      <td>${esc(o.name)}</td>
-      <td class="cmdr-num">${fmtCr(o.sellPrice)}</td>
-      <td class="cmdr-num">${fmtCr(o.buyPrice)}</td>
-      <td class="cmdr-num">${fmtNum(o.stock)}</td>
-      <td class="cmdr-num">${fmtNum(o.demand)}</td>
-    </tr>
-  `).join('') || '<tr><td colspan="5">No active buy/sell orders.</td></tr>';
-
-  panel.innerHTML = `
-    <div class="cmdr-subhead"><h2>${esc(name)}</h2>${data.callsign ? `<span class="cmdr-subhead-meta">${esc(data.callsign)}</span>` : ''}</div>
-    ${stats}
-
-    <div class="cmdr-subhead"><h2>Cargo Hold</h2></div>
-    <div class="cmdr-table-wrap">
-      <table class="cmdr-table"><thead><tr><th>Commodity</th><th class="cmdr-num">Qty</th></tr></thead><tbody>${cargoRows}</tbody></table>
-    </div>
-
-    <div class="cmdr-subhead"><h2>Buy / Sell Orders</h2></div>
-    <div class="cmdr-table-wrap">
-      <table class="cmdr-table">
-        <thead><tr><th>Commodity</th><th class="cmdr-num">Sell</th><th class="cmdr-num">Buy</th><th class="cmdr-num">Stock</th><th class="cmdr-num">Demand</th></tr></thead>
-        <tbody>${orderRows}</tbody>
-      </table>
-    </div>
-  `;
-}
-
-// ─── Community Goals panel ───────────────────────────────────────────────────
-
-function renderGoalsPanel(data) {
-  const panel = document.getElementById('cmdrPanel-goals');
-  if (!data.available || !data.goals.length) {
-    panel.innerHTML = `<div class="cmdr-panel-message">No active Community Goals on file right now.</div>`;
-    return;
-  }
-
-  const cards = data.goals.map(g => {
-    const pct = g.target ? Math.min(100, Math.round((g.current ?? 0) / g.target * 100)) : null;
-    return `
-      <div class="cmdr-goal-card">
-        <h3>${esc(g.title)}</h3>
-        <div class="cmdr-goal-meta">${esc(g.market ?? '')}${g.market && g.system ? ' · ' : ''}${esc(g.system ?? '')}${g.expiry ? ` · Ends ${esc(g.expiry)}` : ''}</div>
-        ${pct != null ? `
-          <div class="cmdr-goal-bar-track"><div class="cmdr-goal-bar-fill" style="width:${pct}%"></div></div>
-          <div class="cmdr-goal-progress"><span>${fmtNum(g.current)} / ${fmtNum(g.target)}</span><span>${pct}%</span></div>
-        ` : ''}
-        ${g.contribution != null ? `<div class="cmdr-goal-progress" style="margin-top:0.5rem;"><span>Your contribution</span><span>${fmtNum(g.contribution)}</span></div>` : ''}
-        ${g.tierReached ? `<div class="cmdr-goal-progress"><span>Tier reached</span><span>${esc(g.tierReached)}</span></div>` : ''}
+function renderCommunityGoalsHtml(data) {
+  if (!data.goals.length) return `<p style="text-align:center;">No active community goals joined.</p>`;
+  return data.goals.map(g => `
+    <div class="cmdr-cg-card fade-in">
+      <div class="cmdr-cg-name">${escapeHtml(g.name)}${g.isComplete ? ' <span class="cmdr-cg-complete">(Complete)</span>' : ''}</div>
+      <div class="cmdr-cg-meta">
+        ${g.market ? `${escapeHtml(g.market)} &middot; ` : ''}
+        ${g.contribution != null ? `Your contribution: ${g.contribution.toLocaleString()}` : 'No contribution on file'}
+        ${g.percentileBand != null ? ` &middot; Top ${g.percentileBand}%` : ''}
       </div>
-    `;
-  }).join('');
-
-  panel.innerHTML = cards;
+    </div>
+  `).join('');
 }
 
-// ─── init ────────────────────────────────────────────────────────────────────
+// ─── Init ───────────────────────────────────────────────────────────────
 
 async function init() {
   let status;
@@ -372,18 +333,9 @@ async function init() {
   }
 
   if (!status.configured) return showNotConfigured();
-  if (!status.loggedIn) return; // static markup in commander.html already shows the login button — leave it alone, don't re-render
+  if (!status.loggedIn) return; // static markup in commander.html already shows the login button — leave it alone
 
-  try {
-    showMessage('<p class="fleet-loading" style="animation:none;">Loading your fleet…</p>');
-    const resp = await fetch('/api/cmdr/fleet');
-    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-    const data = await resp.json();
-    renderShell(data);
-  } catch (err) {
-    console.error('[commander] fleet fetch failed:', err);
-    showMessage(`<p>Couldn't load fleet data — try logging in again.</p><a href="/auth/login" class="cta-button">Login with Frontier</a>`);
-  }
+  initTabs();
 }
 
 init();

@@ -41,12 +41,6 @@ require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
 const frontier = require('./frontier-auth');
-const {
-  normalizeMarket,
-  normalizeShipyard,
-  normalizeFleetCarrier,
-  normalizeCommunityGoals,
-} = require('./capi-normalize');
 
 const PORT = process.env.PORT || 3000;
 const SPANSH_BASE = 'https://spansh.co.uk';
@@ -171,11 +165,21 @@ app.get('/auth/callback', async (req, res) => {
 
 // GET /auth/logout — drop the stored tokens for this session.
 app.get('/auth/logout', (req, res) => {
+  frontier.clearProfileCache(req);
   req.session.frontier = null;
   res.redirect('/commander.html');
 });
 
 // ─── Commander data (proxied cAPI calls) ───────────────────────────────────
+//
+// /profile is the one call shared by status/overview/fleet, so it goes
+// through frontier.getProfileCached() everywhere — that caches it for a
+// few seconds server-side so opening several tabs in a row doesn't send
+// several near-simultaneous /profile requests to Frontier.
+//
+// Ranks are looked up via rank-names.js (Node's `require` also works on
+// that file since it guards its `module.exports` — see the file itself).
+const { rankName, rankProgress } = require('./rank-names.js');
 
 // GET /api/cmdr/status — is this browser session logged in, and as whom?
 app.get('/api/cmdr/status', async (req, res) => {
@@ -186,7 +190,7 @@ app.get('/api/cmdr/status', async (req, res) => {
     return res.json({ configured: true, loggedIn: false });
   }
   try {
-    const profile = await frontier.capiFetch(req, '/profile');
+    const profile = await frontier.getProfileCached(req);
     res.json({
       configured: true,
       loggedIn: true,
@@ -204,7 +208,7 @@ app.get('/api/cmdr/status', async (req, res) => {
 // the frontend actually renders.
 app.get('/api/cmdr/fleet', async (req, res) => {
   try {
-    const profile = await frontier.capiFetch(req, '/profile');
+    const profile = await frontier.getProfileCached(req);
     const shipsRaw = profile.ships || {};
 
     const ships = Object.values(shipsRaw)
@@ -231,36 +235,161 @@ app.get('/api/cmdr/fleet', async (req, res) => {
   }
 });
 
-// Shared handler for the read-only cAPI tabs below: fetch, normalize, and
-// treat "no data yet" (404 — e.g. never docked, or no carrier owned) as a
-// normal { available: false } response rather than an error, since that's
-// an expected state, not a failure.
-function cmdrCapiRoute(path, normalize) {
-  return async (req, res) => {
-    try {
-      const raw = await frontier.capiFetch(req, path);
-      res.json(normalize(raw));
-    } catch (err) {
-      if (err.status === 404) return res.json({ available: false });
-      console.error(`[cmdr] ${path} fetch failed:`, err);
-      res.status(err.status === 401 ? 401 : 502).json({ error: err.message });
+// GET /api/cmdr/ranks — combat/trade/exploration/CQC + Empire/Federation
+// reputation ranks and progress toward the next rank.
+//
+// NB: the exact shape of `commander.rank.*` in the cAPI response isn't
+// officially documented (this is a reverse-engineered API) — most sources
+// agree it's a [rankIndex, progressPercent] pair, but rankName()/
+// rankProgress() in rank-names.js handle a plain number or {rank,progress}
+// object too, so this degrades to "name only, no progress bar" rather than
+// breaking if Frontier's actual shape differs.
+app.get('/api/cmdr/ranks', async (req, res) => {
+  try {
+    const profile = await frontier.getProfileCached(req);
+    const rank = profile.commander?.rank || {};
+    const categories = ['combat', 'trade', 'explore', 'cqc', 'empire', 'federation'];
+    const ranks = categories.map(cat => ({
+      category: cat,
+      name: rankName(cat, rank[cat]),
+      progress: rankProgress(rank[cat]),
+    }));
+    res.json({ ranks });
+  } catch (err) {
+    console.error('[cmdr] ranks fetch failed:', err);
+    res.status(err.status === 401 ? 401 : 502).json({ error: err.message });
+  }
+});
+
+// GET /api/cmdr/location — last known system/station, and whether the
+// commander is currently docked there.
+app.get('/api/cmdr/location', async (req, res) => {
+  try {
+    const profile = await frontier.getProfileCached(req);
+    res.json({
+      docked: !!profile.commander?.docked,
+      system: profile.lastSystem?.name ?? null,
+      station: profile.lastStarport?.name ?? null,
+      allegiance: profile.lastSystem?.faction ?? null,
+    });
+  } catch (err) {
+    console.error('[cmdr] location fetch failed:', err);
+    res.status(err.status === 401 ? 401 : 502).json({ error: err.message });
+  }
+});
+
+// GET /api/cmdr/loadout — fitted modules on the CURRENT ship. cAPI already
+// includes a localised human-readable name per module (locName), so unlike
+// ship type/name we don't need our own symbol-to-name table here.
+app.get('/api/cmdr/loadout', async (req, res) => {
+  try {
+    const profile = await frontier.getProfileCached(req);
+    const ship = profile.ship || {};
+    const modulesRaw = ship.modules || {};
+
+    const modules = Object.entries(modulesRaw)
+      .filter(([, m]) => m && m.module)
+      .map(([slot, m]) => ({
+        slot,
+        name: m.module.locName || m.module.name || 'Unknown',
+        engineering: m.engineer ? {
+          engineer: m.engineer.engineerName ?? null,
+          blueprint: m.engineer.recipeLocName || m.engineer.recipeName || null,
+          level: m.engineer.recipeLevel ?? null,
+        } : null,
+        on: m.module.on !== false,
+      }))
+      .sort((a, b) => a.slot.localeCompare(b.slot));
+
+    res.json({
+      shipType: ship.name || null,
+      shipName: ship.shipName || null,
+      health: ship.health || null,
+      modules,
+    });
+  } catch (err) {
+    console.error('[cmdr] loadout fetch failed:', err);
+    res.status(err.status === 401 ? 401 : 502).json({ error: err.message });
+  }
+});
+
+// GET /api/cmdr/carrier — fleet carrier summary. A 204 from cAPI means the
+// commander simply doesn't own one, which is a normal (not error) state.
+// Frontier asks integrators not to poll this endpoint frequently, so it's
+// only ever called when the person actually opens this tab — never
+// pre-fetched — and isn't covered by the /profile cache above (separate
+// endpoint entirely).
+app.get('/api/cmdr/carrier', async (req, res) => {
+  try {
+    const resp = await frontier.capiRequest(req, '/fleetcarrier');
+    if (resp.status === 204) {
+      return res.json({ owned: false });
     }
-  };
-}
+    if (!resp.ok) {
+      const text = await resp.text().catch(() => '');
+      const err = new Error(`cAPI /fleetcarrier returned ${resp.status}${text ? `: ${text}` : ''}`);
+      err.status = resp.status;
+      throw err;
+    }
+    const data = await resp.json();
+    const decodeName = (hex) => {
+      if (!hex) return null;
+      try { return Buffer.from(hex, 'hex').toString('utf8'); } catch { return null; }
+    };
+    res.json({
+      owned: true,
+      callsign: data.name?.callsign ?? null,
+      vanityName: decodeName(data.name?.vanityName),
+      currentSystem: data.currentStarSystem ?? null,
+      balance: data.balance ?? null,
+      fuel: data.fuel ?? null,
+      state: data.state ?? null,
+      dockingAccess: data.dockingAccess ?? null,
+      notoriousAccess: !!data.notoriousAccess,
+      capacity: data.capacity ? {
+        cargoForSale: data.capacity.cargoForSale ?? null,
+        cargoNotForSale: data.capacity.cargoNotForSale ?? null,
+        freeSpace: data.capacity.freeSpace ?? null,
+      } : null,
+      finance: data.finance ? {
+        bankBalance: data.finance.bankBalance ?? null,
+        bankReservedBalance: data.finance.bankReservedBalance ?? null,
+        maintenance: data.finance.maintenance ?? null,
+        coreCost: data.finance.coreCost ?? null,
+        servicesCost: data.finance.servicesCost ?? null,
+        debtThreshold: data.finance.debtThreshold ?? null,
+      } : null,
+    });
+  } catch (err) {
+    console.error('[cmdr] carrier fetch failed:', err);
+    res.status(err.status === 401 ? 401 : 502).json({ error: err.message });
+  }
+});
 
-// GET /api/cmdr/market — commodities at the last station docked at.
-app.get('/api/cmdr/market', cmdrCapiRoute('/market', normalizeMarket));
-
-// GET /api/cmdr/shipyard — ships + outfitting modules at the last station docked at.
-app.get('/api/cmdr/shipyard', cmdrCapiRoute('/shipyard', normalizeShipyard));
-
-// GET /api/cmdr/fleetcarrier — carrier status, cargo, buy/sell orders, finances.
-// NB: Frontier only refreshes this on CarrierBuy / opening the carrier UI
-// in-game, with a ~15 min cooldown server-side, so don't poll this often.
-app.get('/api/cmdr/fleetcarrier', cmdrCapiRoute('/fleetcarrier', normalizeFleetCarrier));
-
-// GET /api/cmdr/communitygoals — active CGs and this commander's contribution.
-app.get('/api/cmdr/communitygoals', cmdrCapiRoute('/communitygoals', normalizeCommunityGoals));
+// GET /api/cmdr/communitygoals — active CGs and this commander's own
+// contribution/percentile in each, where Frontier reports one.
+app.get('/api/cmdr/communitygoals', async (req, res) => {
+  try {
+    const data = await frontier.capiFetch(req, '/communitygoals');
+    const goalsRaw = Array.isArray(data) ? data : (data.communitygoals || data.goals || []);
+    const goals = goalsRaw.map(g => ({
+      name: g.title || g.name || 'Community Goal',
+      system: g.market_name ? null : (g.systemName ?? null),
+      market: g.market_name ?? null,
+      expiry: g.expiry ?? null,
+      currentTotal: g.current_total ?? g.currentTotal ?? null,
+      targetTotal: g.target_total ?? g.targetTotal ?? null,
+      contribution: g.contribution ?? null,
+      percentileBand: g.percentile_band ?? g.percentileBand ?? null,
+      tierReached: g.tier_reached ?? g.tierReached ?? null,
+      isComplete: !!(g.is_complete ?? g.isComplete),
+    }));
+    res.json({ goals });
+  } catch (err) {
+    console.error('[cmdr] community goals fetch failed:', err);
+    res.status(err.status === 401 ? 401 : 502).json({ error: err.message });
+  }
+});
 
 // Everything else: serve the static site files from this same folder.
 app.use(express.static(__dirname));

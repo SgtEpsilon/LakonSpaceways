@@ -31,6 +31,15 @@ const CAPI_HOST = 'https://companion.orerve.net';
 
 const CLIENT_ID = process.env.FRONTIER_CLIENT_ID;
 const REDIRECT_URI = process.env.FRONTIER_REDIRECT_URI;
+// Optional. PKCE shouldn't need this, but Frontier's dev portal has been
+// known to register apps as requiring a secret even when PKCE is used, and
+// the token endpoint's error in that case is a generic, unhelpful one
+// ("Input parameters do not conform to OAuth2") rather than anything that
+// names client_secret specifically. If you have one (from your app's page
+// at https://user.frontierstore.net/dev), set FRONTIER_CLIENT_SECRET in
+// .env and it'll be included; if you don't, leave it unset and it's
+// omitted entirely, same as before.
+const CLIENT_SECRET = process.env.FRONTIER_CLIENT_SECRET;
 
 function isConfigured() {
   return Boolean(CLIENT_ID && REDIRECT_URI);
@@ -71,10 +80,30 @@ function buildAuthorizeUrl({ verifier, state }) {
 
 // ─── Token exchange / refresh ───────────────────────────────────────────────
 
+// Logs the outgoing token request with secrets redacted, so a failure can
+// actually be diagnosed from server logs instead of guessed at. Never logs
+// the client_secret, code_verifier, code, or refresh_token values — only
+// which fields were present and their lengths, plus the always-public
+// client_id and redirect_uri.
+function logTokenRequest(body) {
+  const summary = Object.fromEntries(Object.entries(body).map(([k, v]) => {
+    if (v == null) return [k, '(missing)'];
+    if (k === 'client_id' || k === 'redirect_uri' || k === 'grant_type') return [k, v];
+    return [k, `(present, ${String(v).length} chars)`];
+  }));
+  console.log('[frontier-auth] POST /token', summary);
+}
+
 async function postToken(body) {
+  if (CLIENT_SECRET) body = { ...body, client_secret: CLIENT_SECRET };
+  logTokenRequest(body);
+
   const resp = await fetch(TOKEN_URL, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      Accept: 'application/json',
+    },
     body: new URLSearchParams(body).toString(),
   });
   const text = await resp.text();
@@ -82,6 +111,7 @@ async function postToken(body) {
   try { data = JSON.parse(text); } catch { data = { raw: text }; }
   if (!resp.ok) {
     const detail = data.error_description || data.error || text || resp.statusText;
+    console.error(`[frontier-auth] /token failed: ${resp.status} ${detail}`);
     throw new Error(`Frontier token endpoint returned ${resp.status}: ${detail}`);
   }
   return data;
@@ -124,7 +154,7 @@ function toTokenSet(data, fallbackRefreshToken) {
 // ─── cAPI calls (with automatic refresh-on-expiry) ─────────────────────────
 
 // req.session.frontier holds { access_token, refresh_token, token_type, expires_at }
-async function capiFetch(req, path) {
+async function capiRequest(req, path) {
   const tokens = req.session.frontier;
   if (!tokens || !tokens.refresh_token) {
     const err = new Error('Not logged in to Frontier');
@@ -150,14 +180,36 @@ async function capiFetch(req, path) {
     resp = await doFetch();
   }
 
+  return resp;
+}
+
+// Returns parsed JSON, or throws for any non-2xx status.
+async function capiFetch(req, path) {
+  const resp = await capiRequest(req, path);
   if (!resp.ok) {
     const text = await resp.text().catch(() => '');
     const err = new Error(`cAPI ${path} returned ${resp.status}${text ? `: ${text}` : ''}`);
     err.status = resp.status;
     throw err;
   }
-
   return resp.json();
+}
+
+// Frontier asks callers not to hammer /profile, and switching between tabs
+// on the same page load would otherwise re-fetch it for ranks, location,
+// AND the ships list within a second or two of each other. Cache it very
+// briefly per-session so that doesn't happen, without going stale for a
+// commander who's actually just logged in to check something.
+const PROFILE_CACHE_MS = 20_000;
+const profileCache = new Map(); // sessionID -> { data, at }
+
+async function getProfileCached(req) {
+  const key = req.sessionID;
+  const cached = profileCache.get(key);
+  if (cached && Date.now() - cached.at < PROFILE_CACHE_MS) return cached.data;
+  const data = await capiFetch(req, '/profile');
+  profileCache.set(key, { data, at: Date.now() });
+  return data;
 }
 
 module.exports = {
@@ -168,4 +220,7 @@ module.exports = {
   exchangeCode,
   refreshTokens,
   capiFetch,
+  capiRequest,
+  getProfileCached,
+  clearProfileCache: (req) => profileCache.delete(req.sessionID),
 };
