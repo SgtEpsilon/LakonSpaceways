@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 /**
  * server.js — LakonSpaceways combined static site + Spansh proxy
  * =================================================================
